@@ -1,0 +1,22 @@
+.header {
+    padding-left: 10%;
+    background-color: white;
+    height: 64px;
+    line-height: 64px;
+}
+
+.header .dropdown-text {
+    width: 10%;
+    color: black;
+    margin-right: 10%;
+  }
+
+.header a:hover {
+    color: #1890ff;
+}
+
+.user-table {
+    display: flex;
+    align-items: baseline;
+}
+  
