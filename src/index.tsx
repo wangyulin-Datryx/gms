@@ -1,12 +1,13 @@
-import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import './index.css'
+import 'tachyons'
 import App from './App'
 
 
 ReactDOM.render(
-  <React.StrictMode>
-      <App />
-  </React.StrictMode>,
+      <Router>
+        <App />
+      </Router>,
   document.getElementById('root')
 )

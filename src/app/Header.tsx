@@ -8,10 +8,8 @@ import {
   DownOutlined,
   UserOutlined 
 } from '@ant-design/icons';
-
-
 import './Header.css'
-
+import { Link } from 'react-router-dom';
 
 const myWorkTable = (
     <Menu>
@@ -41,43 +39,40 @@ const UserTable = () => {
   const text = <span>登录用户：admin</span>
   const content = (
     <div>
-      <a>登出</a>
+      <Link to="/login">登出</Link>
     </div>
   )
   return (
-      <div className="user-table">
-        <Avatar size={30} icon={<UserOutlined />} />
+    <div className="user-table">
+      <Avatar size={30} icon={<UserOutlined />} />
         <Popover placement="bottomRight" title={text} content={content} trigger="click">
-          <a style={{marginLeft: "5px", color:"black"}}>admin</a>
+          <p style={{marginLeft: "5px", color:"black"}}>admin</p>
         </Popover>
-      </div>
-      
+    </div> 
   )
 }
 
 const Header= () => {
-    return (
-        <div className="header">
-            <Dropdown overlay={myWorkTable} trigger={['click']}>
-                <a className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
-                  我的工作台 <DownOutlined style={{ marginLeft: '2%' }}/>
-                </a>
-            </Dropdown>
-
-            <a className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
-                消息中心 
-            </a>
-
-            <Dropdown overlay={dashBoard} trigger={['click']}>
-                <a className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
-                  工厂大数据看板 <DownOutlined style={{ marginLeft: '2%' }}/>
-                </a>
-            </Dropdown>
-            <div style={{ float: "right", marginRight: "5%" }}>
-              <UserTable />
-            </div>
-        </div>
-    )
+  return (
+    <div className="header">
+      <Dropdown overlay={myWorkTable} trigger={['click']}>
+        <p className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
+          我的工作台 <DownOutlined style={{ marginLeft: '2%' }}/>
+        </p>
+      </Dropdown>
+      <p className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
+        消息中心 
+      </p>
+      {/* <Dropdown overlay={dashBoard} trigger={['click']}>
+        <p className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
+          工厂大数据看板 <DownOutlined style={{ marginLeft: '2%' }}/>
+        </p>
+      </Dropdown> */}
+      <div style={{ float: "right", marginRight: "5%" }}>
+        <UserTable />
+      </div>
+    </div>
+  )
 }
 
 export default Header
