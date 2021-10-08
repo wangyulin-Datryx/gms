@@ -8,7 +8,6 @@ import {
   DownOutlined,
   UserOutlined 
 } from '@ant-design/icons';
-import './Header.css'
 import { Link } from 'react-router-dom';
 
 const myWorkTable = (
@@ -54,9 +53,16 @@ const UserTable = () => {
 
 const Header= () => {
   return (
-    <div className="header">
+    <div 
+      className="pl4 bg-white flex" 
+      style={{lineHeight: '64px', height: '64px'}}
+    >
       <Dropdown overlay={myWorkTable} trigger={['click']}>
-        <p className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
+        <p 
+          className="ant-dropdown-link dropdown-text" 
+          style={{width: '10%', color: 'black', marginRight: '10%'}}
+          onClick={e => e.preventDefault()}
+        >
           我的工作台 <DownOutlined style={{ marginLeft: '2%' }}/>
         </p>
       </Dropdown>

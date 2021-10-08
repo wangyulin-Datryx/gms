@@ -12,7 +12,6 @@ import {
   ContainerOutlined
 } from '@ant-design/icons';
 import DatryxIcon from '../assets/images/datryx-icon.png'
-import './NavBar.css'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -28,9 +27,13 @@ const NavBar = () => {
             left: 0,
         }}
       >
-        <div className="nav-logo">
-          <img src={DatryxIcon} alt="logo"/>
-          <h2>GMS系统</h2>
+        <div className="flex justify-start items-center pa2 mb2">
+          <img 
+            src={DatryxIcon} 
+            alt="logo" 
+            style={{width: '50px', height: '50px'}}
+          />
+          <h2 style={{color: "white", marginLeft: '10px'}}>GMS系统</h2>
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
           <Menu.Item key="home" icon={<UserOutlined />}>
