@@ -30,24 +30,27 @@ const NavBar = () => {
       >
         <div className="nav-logo">
           <img src={DatryxIcon} alt="logo"/>
-          <h2>GMS绿色工厂</h2>
+          <h2>GMS系统</h2>
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
           <Menu.Item key="home" icon={<UserOutlined />}>
             <Link to="/home">首页</Link>
           </Menu.Item>
-          <SubMenu key="sales" icon={<ContainerOutlined />} title="nav2">
-            <Menu.Item key="add-order" icon={<VideoCameraOutlined />}>
-              <Link to="/add-order">新建订单</Link>
+          <SubMenu key="analysis" icon={<ContainerOutlined />} title="分析">
+            <Menu.Item key="volume-analysis" icon={<VideoCameraOutlined />}>
+              <Link to="/volume-analysis">用量分析</Link>
             </Menu.Item>
-            <Menu.Item key="history-order" icon={<VideoCameraOutlined />}>
-              <Link to="/history-order">历史订单</Link>
+            <Menu.Item key="process-analysis" icon={<VideoCameraOutlined />}>
+              <Link to="/process-analysis">环节分析</Link>
+            </Menu.Item>
+            <Menu.Item key="openration-analysis" icon={<VideoCameraOutlined />}>
+              <Link to="/history-order">运行分析</Link>
             </Menu.Item>
           </SubMenu>
           <Menu.Item key="3" icon={<UploadOutlined />}>
-            nav 3
+            诊断
           </Menu.Item>
-          <Menu.Item key="4" icon={<BarChartOutlined />}>
+          {/* <Menu.Item key="4" icon={<BarChartOutlined />}>
             nav 4
           </Menu.Item>
           <Menu.Item key="5" icon={<CloudOutlined />}>
@@ -61,7 +64,7 @@ const NavBar = () => {
           </Menu.Item>
           <Menu.Item key="8" icon={<ShopOutlined />}>
             nav 8
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Sider>
     </>

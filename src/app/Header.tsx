@@ -68,9 +68,9 @@ const Header= () => {
           工厂大数据看板 <DownOutlined style={{ marginLeft: '2%' }}/>
         </p>
       </Dropdown> */}
-      <div style={{ float: "right", marginRight: "5%" }}>
+      {/* <div style={{ float: "right", marginRight: "5%" }}>
         <UserTable />
-      </div>
+      </div> */}
     </div>
   )
 }

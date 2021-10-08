@@ -1,7 +1,8 @@
 import NavBar from './app/NavBar'
 import Header from './app/Header'
 import Login from './app/Login'
-import GMSEquipmentBoard from './features/HomePage/GMSEquipmentBoard'
+import GMSEquipmentBoard from './features/home/GMSEquipmentBoard'
+import VolumeAnalysis from './features/analysis/VolumeAnalysis'
 import { Layout } from 'antd'
 import './App.css'
 import { 
@@ -27,6 +28,9 @@ const App = () => {
               <Switch>
                 <Route path="/home">
                   <GMSEquipmentBoard />
+                </Route>
+                <Route path="/volume-analysis">
+                  <VolumeAnalysis />
                 </Route>
               </Switch>
             </Content>

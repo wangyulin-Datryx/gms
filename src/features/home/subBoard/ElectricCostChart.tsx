@@ -8,12 +8,13 @@ import {
   Legend,
 } from "recharts"
 import { useState, useEffect } from 'react'
-import { Row, Col, Select, Descriptions } from "antd"
+import { Button, Select } from "antd"
 import moment from "moment"
+import { Link } from "react-router-dom"
 
 const { Option } = Select
 
-const ElectricCostChart = () => {
+const ElectricCostChart = ({ data }: any) => {
   const [matchDay, setMatchDay] = useState("昨天")
   const [totalKwh, setTotalKwh] = useState(103.54)
 
@@ -30,30 +31,36 @@ const ElectricCostChart = () => {
     ticks.push(step)
     step = step + 600000
   }
-  console.log(ticks)
+  
   const chartData = ticks.map(tick => {
     return {今天: 25, time: tick}
   })
-
+  console.log(data)
 
   return (
     <>
-      <div className="flex items-center pa3 justify-between w-50">
-        <h1 className="f4 blue">用电量对比</h1>
-        <span>（截止12点）</span>
-        <span>{`${totalKwh} kWh`}</span>
-        <Select defaultValue="昨天" style={{ width: 80 }} onChange={handleChange}>
-          <Option value="昨天">昨天</Option>
-          <Option value="lucy">Lucy</Option>
-          <Option value="Yiminghe">yiminghe</Option>
-        </Select>
-        <span>{`对比 98.26 kWh`}</span>
-        <span className="red">{`+5.4%`}</span>
+      <div className="flex justify-between items-center">
+        <div className="flex items-center pa3 justify-between w-50">
+          <h1 className="f4 blue">用电量对比</h1>
+          <span>（截止12点）</span>
+          <span>{`${totalKwh} kWh`}</span>
+          <Select defaultValue="昨天" style={{ width: 80 }} onChange={handleChange}>
+            <Option value="昨天">昨天</Option>
+          </Select>
+          <span>{`对比 98.26 kWh`}</span>
+          <span className="red">{`+5.4%`}</span>
+        </div>
+        <div>
+          <Link to="/volume-analysis" className="mr4">分析</Link>
+          <Link to="" className="mr4">诊断</Link>
+          <Link to="" className="mr4">预警</Link>
+          <Link to="" className="mr4">控制</Link>
+        </div>
       </div>
       <LineChart
         width={1100}
         height={350}
-        data={chartData}
+        data={data}
         margin={{
           top: 5,
           right: 5,

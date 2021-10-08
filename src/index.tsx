@@ -4,7 +4,6 @@ import './index.css'
 import 'tachyons'
 import App from './App'
 
-
 ReactDOM.render(
       <Router>
         <App />
