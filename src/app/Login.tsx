@@ -1,6 +1,6 @@
 import DatryxIcon from '../assets/images/datryx-icon.png'
 import BackgroundImg from '../assets/images/login-background.jpg'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, Row, Col } from 'antd'
 import axios from 'axios'
 
 const Login = () => {
@@ -26,7 +26,7 @@ const Login = () => {
       <div className="absolute left-1 top-1">
         <img alt="logo" src={DatryxIcon} style={{width: '50px', height: '50px'}}/>
       </div>
-      <div className="bg-white pa5 br2 shadow-3 flex flex-column items-center">
+      <div className="bg-white pt5 pb5 pl3 pr3 br2 shadow-3 flex flex-column items-center">
         <h1>登录</h1>
         <Form
           labelCol={{ span: 8 }}
@@ -58,7 +58,7 @@ const Login = () => {
           </Form.Item>
         </Form>
       </div>
-      <p className="mt2"><span>京ICP备2021024082号-1</span>&emsp;&emsp;<span>京公网安备11010502045380号</span></p>
+      <p className="mt2"><span>京ICP备2021024082号-1</span><br></br><span>京公网安备11010502045380号</span></p>
     </div>
   )
 }
