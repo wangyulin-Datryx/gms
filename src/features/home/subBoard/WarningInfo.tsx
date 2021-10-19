@@ -1,4 +1,4 @@
-import { Progress, Divider, Button } from "antd"
+import { Progress } from "antd"
 import { ThunderboltOutlined } from "@ant-design/icons"
 
 export default function WarningInfo() {
@@ -6,27 +6,22 @@ export default function WarningInfo() {
     <>
       <div className="flex pt3 justify-around">
         <div 
-          className="br-100 pa1 ba b--black-10 h3 w3 bg-blue" 
-          style={{display: 'flex', justifyContent: "center", alignItems: 'center'}}>
+          className="br-100 pa1 bg-blue flex justify-center items-center" 
+          style={{width: '50px', height: '50px'}}>
           <ThunderboltOutlined 
             style={{ 
-              fontSize: '32px', 
+              fontSize: '20px', 
               color: 'white' }}
           />
         </div>
         <div>
           <h4>预警信息</h4>
           <p style={{color: 'red'}}>{`6条预警`}</p>
-          <p>{`超用量`}</p>
+          <p>{`超用量  电压不足`}</p>
         </div>
-        <div>
+        <div className="flex justify-center items-center mb2">
           <Progress type="circle" percent={6} format={percent => `${percent} 条预警`} />
         </div>
-      </div>
-      <Divider></Divider>
-      <div className="flex mb3 justify-around">
-        <Button>详细查看</Button>
-        <Button>历史预警</Button>
       </div>
     </>
   )

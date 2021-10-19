@@ -44,7 +44,7 @@ const EquipmentOnlineChart = () => {
         <Legend verticalAlign="bottom" height={36} />
         <Pie
           data={data}
-          cx={185}
+          cx={165}
           cy={150}
           labelLine={false}
           label={renderCustomizedLabel}

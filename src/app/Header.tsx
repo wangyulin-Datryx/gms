@@ -2,13 +2,22 @@ import {
   Menu, 
   Dropdown,
   Popover, 
-  Avatar
+  Avatar,
+  Row,
+  Col,
+  Button,
+  Drawer
 } from 'antd';
 import { 
+  MenuOutlined,
   DownOutlined,
-  UserOutlined 
+  UserOutlined,
+  DeleteRowOutlined
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import ESGLogo from '../assets/images/esg1.png'
+import { useState } from 'react'
+import Menus from './Menus';
+import './Header.css'
 
 const myWorkTable = (
     <Menu>
@@ -21,63 +30,81 @@ const myWorkTable = (
       <Menu.Divider />
       <Menu.Item key="3">3rd menu item</Menu.Item>
     </Menu>
-);
-
-const dashBoard = (
-  <Menu>
-    <Menu.Item key="0">
-      <a href="https://www.antgroup.com">总览看板</a>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <a href="https://www.aliyun.com">库存看板</a>
-    </Menu.Item>
-  </Menu>
-);
+)
 
 const UserTable = () => {
-  const text = <span>登录用户：admin</span>
-  const content = (
+  const username: string | null = localStorage.getItem("username")
+
+  const handleLogOut = () => {
+    localStorage.clear();
+    window.location.reload();
+  }
+
+  const userContent = (
     <div>
-      <Link to="/login">登出</Link>
+      <a onClick={handleLogOut}><DeleteRowOutlined style={{ marginRight: 10 }} />登出</a>
     </div>
   )
+
   return (
-    <div className="user-table">
+    <div style={{ display: "flex", alignItems: "baseline" }} className="usertab">
       <Avatar size={30} icon={<UserOutlined />} />
-        <Popover placement="bottomRight" title={text} content={content} trigger="click">
-          <p style={{marginLeft: "5px", color:"black"}}>admin</p>
-        </Popover>
-    </div> 
+      <Popover placement="bottom" title={`登录用户: ${username || "admin"}`} content={userContent} trigger="click" style={{ marginLeft: 50 }}>
+        <h4 style={{ marginLeft: 10, cursor: "pointer" }}>{username || "admin"}   </h4>
+      </Popover>
+    </div>
   )
 }
 
 const Header= () => {
+  const [visible, setVisible] = useState(false)
   return (
-    <div 
-      className="pl4 bg-white flex" 
-      style={{lineHeight: '64px', height: '64px'}}
+    <Row 
+      className='bg-white pt2' 
+      style={{alignItems: 'baseline'}}
     >
-      <Dropdown overlay={myWorkTable} trigger={['click']}>
-        <p 
-          className="ant-dropdown-link dropdown-text" 
-          style={{width: '10%', color: 'black', marginRight: '10%'}}
-          onClick={e => e.preventDefault()}
+      <Col md={{span: 2, order: 0}} xs={{order: 2, span:16}} >
+        <Button
+          className='drawer-button ml4'
+          type='primary'
+          icon={<MenuOutlined />}
+          onClick={() => setVisible(true)}
+        />
+        <Drawer
+          title="GMS"
+          placement='left'
+          onClose={() => setVisible(false)}
+          visible={visible}
         >
-          我的工作台 <DownOutlined style={{ marginLeft: '2%' }}/>
-        </p>
-      </Dropdown>
-      <p className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
-        消息中心 
-      </p>
-      {/* <Dropdown overlay={dashBoard} trigger={['click']}>
+          <Menus />
+        </Drawer>
+      </Col>
+      <Col md={{span:8, order: 0}} xs={{offset: 1, span:8}}>
+        <Dropdown overlay={myWorkTable} trigger={['click']}>
+          <p 
+            className="ant-dropdown-link dropdown-text" 
+            onClick={e => e.preventDefault()}
+          >
+            我的工作台 <DownOutlined style={{ marginLeft: '2%' }}/>
+          </p>
+        </Dropdown>
+      </Col>
+      <Col md={{span:5, order: 0}} xs={{span: 6}}>
         <p className="ant-dropdown-link dropdown-text" onClick={e => e.preventDefault()}>
-          工厂大数据看板 <DownOutlined style={{ marginLeft: '2%' }}/>
+          消息中心 
         </p>
-      </Dropdown> */}
-      {/* <div style={{ float: "right", marginRight: "5%" }}>
+      </Col>
+      <Col md={{offset: 2, span: 2, order: 0}} xs={{order:2, }}>
         <UserTable />
-      </div> */}
-    </div>
+      </Col>
+      <Col md={{span:2, order: 0}} xs={{order: 1}}>
+      <img 
+        src={ESGLogo} 
+        alt="ESGlogo" 
+        style={{width: '130px', height: '40px', borderRadius: "10px"}}
+      />
+      </Col>
+    </Row>
   )
 }
 

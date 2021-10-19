@@ -1,41 +1,21 @@
-import NavBar from './app/NavBar'
-import Header from './app/Header'
-import Login from './app/Login'
-import GMSEquipmentBoard from './features/home/GMSEquipmentBoard'
-import VolumeAnalysis from './features/analysis/VolumeAnalysis'
-import { Layout } from 'antd'
 import './App.css'
-import { 
-  Switch, 
-  Route
-} from 'react-router-dom'
-
-const { Content } = Layout
+import MainPage from './features/mainPage/MainPage'
+import Login from './app/Login'
+import axios from 'axios'
+import { fetchEquipments } from './features/equipments/equipmentsSlice'
+import store from './store'
 
 const App = () => {
+  if (!localStorage.getItem('loginToken')) {
+    return <Login />
+  }
+
+  axios.defaults.headers.common['token'] = localStorage.getItem('loginToken') as string
+  store.dispatch(fetchEquipments())
+
   return (
     <>
-      {/* <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-      </Switch> */}
-        <Layout>
-          <NavBar />
-          <Layout className="site-layout" style={{ marginLeft: 200 }}>
-            <Header />
-            <Content style={{ margin: '24px 16px', overflow: 'initial' }}>
-              <Switch>
-                <Route path="/home">
-                  <GMSEquipmentBoard />
-                </Route>
-                <Route path="/volume-analysis">
-                  <VolumeAnalysis />
-                </Route>
-              </Switch>
-            </Content>
-          </Layout>
-        </Layout>
+      <MainPage />
     </>
   )
 }
