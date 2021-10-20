@@ -3,7 +3,6 @@ import { PieChart, Pie, Cell, Legend } from "recharts"
 const data = [
   { name: "设备在线", value: 300 },
   { name: "设备离线", value: 300 },
-  { name: "设备空转", value: 300 },
 ]
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]

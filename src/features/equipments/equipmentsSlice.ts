@@ -37,7 +37,7 @@ const initialState = equipmentsAdapter.getInitialState({
 
 //Thunk function
 export const fetchEquipments = createAsyncThunk('equipments/fetchEquipments', async () => {
-  const response:any = await axios.post('http://8.130.177.91:8080/history/search',{
+  const response:any = await axios.post('api/history/search',{
         deviceId: 0
     })
   return response.data.data

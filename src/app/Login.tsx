@@ -7,7 +7,7 @@ const Login = () => {
 
   const onFinish = async ({ username, password }: any) => {
     try {
-      const response:any = await axios.post('http://8.130.177.91:8080/auth/login', {
+      const response:any = await axios.post('api/auth/login', {
         username, password
       })
       localStorage.setItem('loginToken', response.data.data)

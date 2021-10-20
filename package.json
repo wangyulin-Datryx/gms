@@ -16,6 +16,7 @@
     "antd": "^4.16.13",
     "axios": "^0.23.0",
     "echarts": "^5.2.1",
+    "http-proxy-middleware": "^2.0.1",
     "qs": "^6.10.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -49,5 +50,6 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.3.0"
-  }
+  },
+  "proxy": "http://8.130.177.91:8080/"
 }

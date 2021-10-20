@@ -20,7 +20,7 @@ export default function EquipmentConsumptionChart({ id }: {id: number}) {
   const fetchElectricConsumption = async () => {
     try {
       setIsLoading(true)
-      const response: any = await axios.post("http://8.130.177.91:8080/history/search", 
+      const response: any = await axios.post("api/history/search", 
       {deviceId: id})
       setIsLoading(false)
       const records = response.data.data.collectors[0].records

@@ -30,7 +30,7 @@ const ElectricCostChart = ({ electricCost, isLaoding }: any) => {
   useEffect(() => {
     const date = moment().subtract(1, 'days').format('YYYY-MM-DDTHH:mm:ss[Z]')
     const fetchYesterDayData = async () => {
-      const response: any = await axios.post('http://8.130.177.91:8080/history/search',
+      const response: any = await axios.post('api/history/search',
         {deviceId: 2, time: date})
       const records = response.data.data.collectors[0].records
       setYesterdayData(records)
