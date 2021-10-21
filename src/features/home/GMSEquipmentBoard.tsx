@@ -8,48 +8,13 @@ import DataEquipmentInfo from './subBoard/DataEquipmentInfo'
 import CurrentMonthElectricCost from './subBoard/CurrentMonthElectricCost'
 import WarningInfo from './subBoard/WarningInfo'
 import MainEquipmentInfo from './subBoard/MainEquipmentInfo'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
 
 const GMSEquipmentBoard = () => {
-  const [electricCost, setElectricCost] = useState()
-  const [isLaoding, setIsLoading] = useState(true)
-  const [isError, setIsError] = useState(false)
-
-  const fetchElectricCost = async () => {
-    try {
-      setIsLoading(true)
-      setIsError(false)
-      const response:any = await axios.post('api/history/search',{
-        deviceId: 0
-      })
-      setIsLoading(false)
-      const records:any = response.data.data.collectors[0].records
-      setElectricCost(records)
-    } catch (error) {
-      setIsLoading(false)
-      setIsError(true)
-      console.log("fetchError", error)
-    } 
-  }
-
-  useEffect(() => {
-    fetchElectricCost()
-  }, [])
-
-  useEffect(() => {
-    let timer = setTimeout(() => fetchElectricCost(), 1000*60*10)
-    return () => clearTimeout(timer)
-  }, [electricCost])
-  
   return (
     <Row gutter={[16, 24]} className="pa2 ma1">
       <Col span={24}>
         <div className="bg-white">
-          <ElectricCostChart 
-            electricCost={electricCost} 
-            isLoading={isLaoding}
-          />
+          <ElectricCostChart />
         </div>
       </Col>
       <Col lg={8} xs={24}>

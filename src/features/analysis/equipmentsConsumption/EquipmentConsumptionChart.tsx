@@ -8,38 +8,15 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts"
-import { useEffect, useState } from "react"
-import axios from "axios"
-import { Spin, Row } from 'antd'
+import { Row, Spin } from "antd"
+import { useAppSelector } from "../../../hook"
+import { selectEquipmentById } from "../../equipments/equipmentsSlice"
 
 export default function EquipmentConsumptionChart({ id }: {id: number}) {
-  const [electricConsumption, setElectricConsumption] = useState([])
-  const [title, setTitle] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-
-  const fetchElectricConsumption = async () => {
-    try {
-      setIsLoading(true)
-      const response: any = await axios.post("api/history/search", 
-      {deviceId: id})
-      setIsLoading(false)
-      const records = response.data.data.collectors[0].records
-      const equipmentName = response.data.data.name
-      setTitle(equipmentName)
-      setElectricConsumption(records)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    fetchElectricConsumption()
-  }, [id])
-
-  useEffect(() => {
-    let timer = setTimeout(() => fetchElectricConsumption(), 1000*60*10)
-    return () => clearTimeout(timer)
-  }, [electricConsumption])
+  const equipment = useAppSelector(state => selectEquipmentById(state, id))
+  const status = useAppSelector(state => state.equipments.status)
+  const equipmentElectric = equipment?.collectors[0].records
+  const equipmentName = equipment?.name
 
   const handleTimeChange = (data: any) => {
     if (data) {
@@ -54,14 +31,14 @@ export default function EquipmentConsumptionChart({ id }: {id: number}) {
       return (
         <div className="custom-tooltip">
           <p className="label ma0">{`${handleTimeChange(label)} `}</p>
-          <p className="label ma0">{`电量： kWh`}</p>
+          <p className="label ma0">{`电量：${payload[0].value} kWh`}</p>
         </div>
       );
     }
     return null;
   }
 
-  if (isLoading) {
+  if (status === 'loading') {
     return (
       <Row 
         className="flex justify-center items-center" 
@@ -74,8 +51,7 @@ export default function EquipmentConsumptionChart({ id }: {id: number}) {
     <div>
       <ResponsiveContainer width='100%' height={350}>
       <LineChart
-        
-        data={electricConsumption}
+        data={equipmentElectric}
         margin={{
           top: 5,
           right: 5,
@@ -91,7 +67,7 @@ export default function EquipmentConsumptionChart({ id }: {id: number}) {
         <YAxis />
         <Tooltip content={<CustomTooltip />}/>
         <Legend />
-        <Line name={`${title}实时电量`} type="monotone" dataKey="quantity" stroke="#82ca9d" />
+        <Line name={`${equipmentName}实时电量`} type="monotone" dataKey="quantity" stroke="#82ca9d" />
       </LineChart>
       </ResponsiveContainer>
     </div>

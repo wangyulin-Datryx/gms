@@ -1,11 +1,16 @@
 import { Progress } from 'antd'
 import { useState } from 'react'
+import { useAppSelector } from '../../../hook'
+import { selectEquipments } from '../../equipments/equipmentsSlice'
 
 export default function DataEquipmentInfo() {
-  const [totalCollector, setTotalCollector] = useState(12)
-  const [onlineCollector, setOnlineCollector] = useState(6)
-  const [totalElectric, setTotalElectric] = useState(15)
-  const [onlineElectric, setOnlineElectric] = useState(6)
+  const equipments = useAppSelector(selectEquipments)
+  const totalCollectors = equipments.length 
+  const onlineCollectors = equipments.map(equipment => equipment.collectors[0]?.status === 1).length
+
+  const totalElectrics = totalCollectors
+  const onlineElectrics = onlineCollectors
+
   const [totalWater, setTotalWater] = useState(15)
   const [onlineWater, setOnlineWater] = useState(6)
   const [totalGas, setTotalGas] = useState(15)
@@ -18,16 +23,16 @@ export default function DataEquipmentInfo() {
         <h4>采集器</h4>
         <span style={{color: "#444"}}>上线数/总数</span>
         <Progress 
-          percent={onlineCollector/totalCollector*100} 
-          format={percent => `${onlineCollector}/${totalCollector}`}
+          percent={onlineCollectors/totalCollectors*100} 
+          format={percent => `${onlineCollectors}/${totalCollectors}`}
         />
       </div>
       <div className="mb3">
         <h4>电表</h4>
         <span style={{color: "#444"}}>上线数/总数</span>
         <Progress 
-          percent={onlineElectric/totalElectric*100} 
-          format={percent => `${onlineElectric}/${totalElectric}`}
+          percent={onlineElectrics/totalElectrics*100} 
+          format={percent => `${onlineElectrics}/${totalElectrics}`}
         />
       </div>
       <div className="mb3">

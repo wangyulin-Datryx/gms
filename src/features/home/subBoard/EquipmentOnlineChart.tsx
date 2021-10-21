@@ -1,9 +1,8 @@
 import { PieChart, Pie, Cell, Legend } from "recharts"
+import { useAppSelector } from "../../../hook"
+import { selectEquipments } from "../../equipments/equipmentsSlice"
 
-const data = [
-  { name: "设备在线", value: 300 },
-  { name: "设备离线", value: 300 },
-]
+
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
 const RADIAN = Math.PI / 180
@@ -36,6 +35,15 @@ const renderCustomizedLabel = ({
 }
 
 const EquipmentOnlineChart = () => {
+  const equipments = useAppSelector(selectEquipments)
+  const onlineEquipments = equipments.map(equipment => equipment.status === 1).length
+  const offlineEquipments = equipments.length - onlineEquipments
+
+  const data = [
+    { name: "设备在线", value: onlineEquipments },
+    { name: "设备离线", value: offlineEquipments },
+  ]
+  
   return (
     <>
       <h1 className="f4 blue pl3 pt3 mt2">设备在线</h1>

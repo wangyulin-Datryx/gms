@@ -27,7 +27,6 @@ export default function EquipmentsConsumptionTable({ setId }:any) {
   ]
 
   const handleClick = (id: number) => {
-    console.log("id", id)
     setId(id)
   }
 

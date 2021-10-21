@@ -4,16 +4,26 @@ import EquipmentCurrentChart from './EquipmentCurrentChart'
 import EquipmentVoltageChart from './EquipmentVoltageChart'
 import EquipmentsConsumptionTable from './EquipmentsConsumptionTable'
 import { useState } from 'react'
-
-const data: any = [
-  {key: '1', name: '快速脱水器', id: 4},
-  {key: '2', name: '粉尘处理设备', id: 5},
-  {key: '3', name: '吊钩抛瓦清理机1', id: 6},
-  {key: '4', name: '吊钩抛瓦清理机2', id: 7},
-]
+import { useAppSelector } from '../../../hook'
+import { selectEquipments } from '../../equipments/equipmentsSlice'
 
 export default function EquipmentsConsumption() {
-  const [id, setId] = useState<number>(4)
+  const [id, setId] = useState<number>(8)
+  const allEquipments = useAppSelector(selectEquipments)
+  const allEquipmentsWithRecords = allEquipments.filter(
+    equipment => equipment.collectors[0].records.length> 0 && 
+    equipment.deviceId !== 0
+  )
+  const data = allEquipmentsWithRecords.map(equipment => {
+    const length = equipment.collectors[0].records.length
+    return {
+      key: equipment.deviceId,
+      id: equipment.deviceId, 
+      name: equipment.name,
+      currentAmount: equipment.collectors[0].records[length-1].currentAmount
+    }
+  })
+  data.sort((a, b) => (a.currentAmount > b.currentAmount) ? -1 : 1)
 
   const handleClick = (id: number) => {
     setId(id)
@@ -31,6 +41,7 @@ export default function EquipmentsConsumption() {
             return (
               <List.Item>
                 <div>{item.name}</div>
+                <div>{item.currentAmount}kWh</div>
                 <Button
                   style={{border: 'none'}}
                   onClick={() => handleClick(id)}
@@ -48,10 +59,10 @@ export default function EquipmentsConsumption() {
             <EquipmentConsumptionChart id={id}/>
           </Col>
           <Col lg={12}>
-            <EquipmentCurrentChart />
+            <EquipmentCurrentChart id={id}/>
           </Col>
           <Col lg={12}>
-            <EquipmentVoltageChart />
+            <EquipmentVoltageChart id={id}/>
           </Col>
         </Row>
         </Col>

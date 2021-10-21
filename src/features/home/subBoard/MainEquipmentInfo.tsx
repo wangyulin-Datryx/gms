@@ -1,9 +1,30 @@
 import { ThunderboltOutlined } from "@ant-design/icons"
 import { ReactComponent as EquipmentSVG} from '../../../assets/images/equipment.svg'
 import { useHistory } from "react-router-dom"
+import { useAppSelector } from "../../../hook"
+import { selectEquipments } from "../../equipments/equipmentsSlice"
+import { List } from 'antd'
 
 export default function MainEquipmentInfo() {
   const history = useHistory()
+  const allEquipments = useAppSelector(selectEquipments)
+  const allEquipmentsWithRecords = allEquipments.filter(
+    equipment => equipment.collectors[0].records.length> 0 && 
+    equipment.deviceId !== 0
+  )
+  const data = allEquipmentsWithRecords.map(equipment => {
+    const length = equipment.collectors[0].records.length
+    return {
+      key: equipment.deviceId,
+      id: equipment.deviceId, 
+      name: equipment.name,
+      currentAmount: equipment.collectors[0].records[length-1].currentAmount
+    }
+  })
+  data.sort((a, b) => (a.currentAmount > b.currentAmount) ? -1 : 1)
+
+  const listData = data.slice(0, 3)
+
   const handleClick = () => {
     history.push("/equipment-consumption")
   }
@@ -22,10 +43,19 @@ export default function MainEquipmentInfo() {
         </div>
         <div>
           <h4>重点耗能设备</h4>
-          <p style={{color: 'red'}}>{`设备：T1011`}</p>
-          <p>{`用电量：5863.25 kWh`}</p>
-          <p>{`上月同期9.6%`}</p>
-          <p>{`上月用电5319.45 kWh`}</p>
+          <List
+            itemLayout="horizontal"
+            dataSource={listData}
+            renderItem={(item: any) => {
+              const id = item.id
+              return (
+                <List.Item>
+                  <div>{item.name}</div>
+                  <div>{item.currentAmount}kWh</div>
+                </List.Item>
+              )}
+            }
+          />
         </div>
         <div className="flex justify-center items-center">
           <EquipmentSVG 

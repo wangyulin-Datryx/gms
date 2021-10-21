@@ -10,15 +10,18 @@ import {
 } from "recharts"
 import { useState, useEffect } from 'react'
 import { Select, Spin, Row, Col } from "antd"
-import { Link } from "react-router-dom"
 import moment from "moment"
 import axios from "axios"
-
-const token = localStorage.getItem("loginToken")
+import { useAppSelector } from "../../../hook"
+import { selectEquipments } from "../../equipments/equipmentsSlice"
 
 const { Option } = Select
 
-const ElectricCostChart = ({ electricCost, isLaoding }: any) => {
+const ElectricCostChart = () => {
+  const equipments = useAppSelector(selectEquipments)
+  const status = useAppSelector(state => state.equipments.status)
+  const totalElectricConsumption = equipments.filter(equipment => equipment.deviceId===0)[0]?.collectors[0].records
+
   const [matchDay, setMatchDay] = useState("昨天")
   const [totalKwh, setTotalKwh] = useState(103.54)
   const [yesterdayData, setYesterdayData] = useState()
@@ -31,11 +34,12 @@ const ElectricCostChart = ({ electricCost, isLaoding }: any) => {
     const date = moment().subtract(1, 'days').format('YYYY-MM-DDTHH:mm:ss[Z]')
     const fetchYesterDayData = async () => {
       const response: any = await axios.post('api/history/search',
-        {deviceId: 2, time: date})
+        {deviceId: 0, time: date})
       const records = response.data.data.collectors[0].records
       setYesterdayData(records)
     }
-  })
+    fetchYesterDayData()
+  }, [])
 
   const handleTimeChange = (data: any) => {
     if (data) {
@@ -58,7 +62,7 @@ const ElectricCostChart = ({ electricCost, isLaoding }: any) => {
     return null;
   }
 
-  if (isLaoding || !electricCost) {
+  if (status==="loading" || !totalElectricConsumption) {
     return (
       <div>
         <Spin />
@@ -83,17 +87,11 @@ const ElectricCostChart = ({ electricCost, isLaoding }: any) => {
             <span className="red">{`+5.4%`}</span>
           </Col>
         </Row>
-        {/* <div>
-          <Link to="/volume-analysis" className="mr4">分析</Link>
-          <Link to="" className="mr4">诊断</Link>
-          <Link to="" className="mr4">预警</Link>
-          <Link to="" className="mr4">控制</Link>
-        </div> */}
       </div>
       <div>
         <ResponsiveContainer width="100%" height={350}>
           <LineChart
-            data={electricCost}
+            data={yesterdayData}
             margin={{
               top: 5,
               right: 30,
@@ -110,12 +108,19 @@ const ElectricCostChart = ({ electricCost, isLaoding }: any) => {
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
           {/* <Line
+            name="昨天"
+            
             type="monotone"
-            dataKey="昨日"
+            dataKey="quantity"
             stroke="#8884d8"
-            activeDot={{ r: 8 }}
           /> */}
-          <Line name="今天" type="monotone" dataKey="quantity" stroke="#82ca9d" />
+          <Line 
+            name="今天" 
+            data={totalElectricConsumption} 
+            type="monotone" 
+            dataKey="quantity" 
+            stroke="#82ca9d" 
+          />
           </LineChart>
         </ResponsiveContainer>
         </div>

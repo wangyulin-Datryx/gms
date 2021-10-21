@@ -8,8 +8,20 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts"
+import { useAppSelector } from "../../../hook"
+import { selectEquipmentById } from "../../equipments/equipmentsSlice"
 
-export default function EquipmentVoltageChart() {
+export default function EquipmentVoltageChart({ id }: any) {
+  const equipment = useAppSelector(state => selectEquipmentById(state, id))
+  const voltageData = equipment?.collectors[0].records.map(data => {
+    const current = JSON.parse(data.voltageCurrentAmount)
+    return {
+      time: data.time,
+      A: current.electricVoltageA,
+      B: current.electricVoltageB,
+      C: current.electricVoltageC
+    }
+  })
   const handleTimeChange = (data: any) => {
     if (data) {
       const time = data.split("T")[1]
@@ -24,15 +36,15 @@ export default function EquipmentVoltageChart() {
       return (
         <div className="custom-tooltip">
           <p className="label ma0">{`${handleTimeChange(label)} `}</p>
-          <p className="label ma0">{`电量： kWh`}</p>
+          <p className="label ma0">{`A相电压：${payload[0].value} V`}</p>
+          <p className="label ma0">{`B相电压：${payload[0].value} V`}</p>
+          <p className="label ma0">{`C相电压：${payload[0].value} V`}</p>
         </div>
       );
     }
-  
     return null;
   }
 
-  const voltageData: any = []
   return (
     <div>
       <ResponsiveContainer width='100%' height={350}>
@@ -53,7 +65,9 @@ export default function EquipmentVoltageChart() {
         <YAxis />
         <Tooltip content={<CustomTooltip />}/>
         <Legend />
-        <Line name="设备实时电压" type="monotone" dataKey="quantity" stroke="#82ca9d" />
+        <Line name="A相电压" type="monotone" dataKey="A" stroke="#82ca9d" />
+        <Line name="B相电压" type="monotone" dataKey="B" stroke="#c3b6e6" />
+        <Line name="C相电压" type="monotone" dataKey="C" stroke="#71d4d4" />
       </LineChart>
       </ResponsiveContainer>
     </div>

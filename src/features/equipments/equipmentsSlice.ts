@@ -10,6 +10,8 @@ import type { RootState } from "../../store"
 export interface ElectricConsumption {
   quantity: number;
   time: string;
+  currentAmount: number;
+  voltageCurrentAmount: any;
 }
 
 export interface Collector {
@@ -37,10 +39,13 @@ const initialState = equipmentsAdapter.getInitialState({
 
 //Thunk function
 export const fetchEquipments = createAsyncThunk('equipments/fetchEquipments', async () => {
-  const response:any = await axios.post('api/history/search',{
-        deviceId: 0
-    })
-  return response.data.data
+  const response:any = await axios.post('api/history/searchAll',{
+    deviceId: 0
+  })
+  const sumResponse: any = await axios.post('api/history/search', {
+    deviceId: 0
+  })
+  return [...response.data.data, sumResponse.data.data]
 })
 
 const equipmentsSlice = createSlice({
@@ -54,7 +59,7 @@ const equipmentsSlice = createSlice({
       })
       .addCase(fetchEquipments.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        equipmentsAdapter.upsertOne(state, action.payload)
+        equipmentsAdapter.setAll(state, action.payload)
       })
       .addCase(fetchEquipments.rejected, (state, action) => {
         state.status = 'failed'
