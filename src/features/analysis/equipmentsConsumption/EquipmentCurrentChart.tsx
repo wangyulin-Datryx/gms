@@ -65,7 +65,7 @@ export default function EquipmentCurrentChart({ id }:any) {
           tickFormatter={(date) => handleTimeChange(date)}
         />
         <YAxis />
-        <Tooltip content={<CustomTooltip />}/>
+        <Tooltip />
         <Legend />
         <Line name="A相电流" type="monotone" dataKey="A" stroke="#82ca9d" />
         <Line name="B相电流" type="monotone" dataKey="B" stroke="#c3b6e6" />

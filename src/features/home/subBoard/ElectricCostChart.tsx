@@ -9,59 +9,62 @@ import {
   ResponsiveContainer
 } from "recharts"
 import { useState, useEffect } from 'react'
-import { Select, Spin, Row, Col } from "antd"
+import { Select, Spin, Row, Col, DatePicker } from "antd"
 import moment from "moment"
 import axios from "axios"
 import { useAppSelector } from "../../../hook"
 import { selectEquipments } from "../../equipments/equipmentsSlice"
 
-const { Option } = Select
+const yesterday = moment().subtract(1, 'days').format('YYYY-MM-DDTHH:mm:ss[Z]')
+
+const handleTimeChange = (data: any) => {
+  if (data) {
+    const time = data.split("T")[1]
+    const hourAndMin = time ? time.split(":").slice(0, 2) : null
+    return hourAndMin ? hourAndMin.join(":") : null
+  }
+}
 
 const ElectricCostChart = () => {
   const equipments = useAppSelector(selectEquipments)
   const status = useAppSelector(state => state.equipments.status)
-  const totalElectricConsumption = equipments.filter(equipment => equipment.deviceId===0)[0]?.collectors[0].records
-
-  const [matchDay, setMatchDay] = useState("昨天")
-  const [totalKwh, setTotalKwh] = useState(103.54)
-  const [yesterdayData, setYesterdayData] = useState()
-
-  const handleChange = (value: string) => {
-    setMatchDay(value)
-  }
+  const [date, setDate] = useState(yesterday)
+  const [someDayData, setSomeDayData] = useState<any>([])
 
   useEffect(() => {
-    const date = moment().subtract(1, 'days').format('YYYY-MM-DDTHH:mm:ss[Z]')
     const fetchYesterDayData = async () => {
       const response: any = await axios.post('api/history/search',
         {deviceId: 0, time: date})
       const records = response.data.data.collectors[0].records
-      setYesterdayData(records)
+      const chartData = records?.map((record: any) => {
+        return {
+          time: handleTimeChange(record.time),
+          yesQuantity: record.quantity,
+          yesCurrentAmount: record.currentAmount
+        }
+      })
+      setSomeDayData(chartData)
     }
     fetchYesterDayData()
-  }, [])
+  }, [date])
 
-  const handleTimeChange = (data: any) => {
-    if (data) {
-      const time = data.split("T")[1]
-      const hourAndMin = time ? time.split(":").slice(0, 2) : null
-      return hourAndMin ? hourAndMin.join(":") : null
-    }
+  function handleDateChange(date: any, dateString: any) {
+    setDate(moment(dateString).format('YYYY-MM-DDTHH:mm:ss[Z]'));
   }
 
-  const CustomTooltip = ({ payload, label, active }: any) => {
-    if (active) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label ma0">{`${handleTimeChange(label)} `}</p>
-          <p className="label ma0">{`电量：${payload[0].value} kWh`}</p>
-        </div>
-      );
+  function disabledDate(current: any) {
+    return current && current < moment("2021-10-11").endOf('day');
+  }
+
+  const totalElectricConsumption = equipments.filter(equipment => equipment.deviceId===0)[0]?.collectors[0].records
+  const todayData = totalElectricConsumption?.map(data => {
+    return {
+      time: handleTimeChange(data.time),
+      toQuantity: data.quantity,
+      toCurrentAmount: data.currentAmount
     }
+  })
   
-    return null;
-  }
-
   if (status==="loading" || !totalElectricConsumption) {
     return (
       <div>
@@ -69,6 +72,18 @@ const ElectricCostChart = () => {
       </div>
     )
   }
+
+  const chartData = someDayData.map((data: any, index: any) => {
+    return {
+      ...data,
+      toQuantity: todayData[index] ? todayData[index].toQuantity : null,
+      toCurrentAmount: todayData[index] ? todayData[index].toCurrentAmount : null
+    }
+  })
+
+  const todayCurrentData =todayData? todayData[todayData?.length - 1]?.toCurrentAmount : 0
+  const todayCurrentTime = todayData[todayData?.length - 1]?.time
+  const someDataTotal = someDayData ? someDayData[someDayData?.length - 1]?.yesCurrentAmount : 0
 
   return (
     <>
@@ -78,20 +93,20 @@ const ElectricCostChart = () => {
             <h1 className="f4 blue">用电量对比</h1>
           </Col>
           <Col md={10}>
-            <span>(截止12点)</span>
-            <span>{`${totalKwh} kWh`}</span>
-            <Select defaultValue="昨天" style={{ width: 80 }} onChange={handleChange}>
-              <Option value="昨天">昨天</Option>
-            </Select>
-            <span>{`对比 98.26 kWh`}</span>
-            <span className="red">{`+5.4%`}</span>
+            <span>{`${someDataTotal} kWh`}</span>
+            <DatePicker 
+              onChange={handleDateChange} 
+              disabledDate={disabledDate}
+            />
+            <span>{`对比 ${todayCurrentData} kWh`}</span>
+            <span>{`(截止${todayCurrentTime})`}</span>
           </Col>
         </Row>
       </div>
       <div>
         <ResponsiveContainer width="100%" height={350}>
           <LineChart
-            data={yesterdayData}
+            data={chartData}
             margin={{
               top: 5,
               right: 30,
@@ -102,23 +117,20 @@ const ElectricCostChart = () => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="time"
-            tickFormatter={(date) => handleTimeChange(date)}
           />
           <YAxis />
-          <Tooltip content={<CustomTooltip />}/>
+          <Tooltip />
           <Legend />
-          {/* <Line
-            name="昨天"
-            
+          <Line
+            name={moment(date).format("YYYY-MM-DD")}
             type="monotone"
-            dataKey="quantity"
+            dataKey="yesQuantity"
             stroke="#8884d8"
-          /> */}
+          />
           <Line 
             name="今天" 
-            data={totalElectricConsumption} 
             type="monotone" 
-            dataKey="quantity" 
+            dataKey="toQuantity" 
             stroke="#82ca9d" 
           />
           </LineChart>

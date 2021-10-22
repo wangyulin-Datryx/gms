@@ -12,7 +12,7 @@ import { Row, Spin } from "antd"
 import { useAppSelector } from "../../../hook"
 import { selectEquipmentById } from "../../equipments/equipmentsSlice"
 
-export default function EquipmentConsumptionChart({ id }: {id: number}) {
+export default function EquipmentConsumptionChart({ id }: any) {
   const equipment = useAppSelector(state => selectEquipmentById(state, id))
   const status = useAppSelector(state => state.equipments.status)
   const equipmentElectric = equipment?.collectors[0].records
