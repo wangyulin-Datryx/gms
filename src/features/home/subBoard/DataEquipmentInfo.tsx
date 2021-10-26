@@ -11,10 +11,10 @@ export default function DataEquipmentInfo() {
   const totalElectrics = totalCollectors
   const onlineElectrics = onlineCollectors
 
-  const [totalWater, setTotalWater] = useState(15)
-  const [onlineWater, setOnlineWater] = useState(6)
-  const [totalGas, setTotalGas] = useState(15)
-  const [onlineGas, setOnlineGas] = useState(6)
+  const [totalWater, setTotalWater] = useState(0)
+  const [onlineWater, setOnlineWater] = useState(0)
+  const [totalGas, setTotalGas] = useState(0)
+  const [onlineGas, setOnlineGas] = useState(0)
 
   return (
     <>

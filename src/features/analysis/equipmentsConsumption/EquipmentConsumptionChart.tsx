@@ -15,27 +15,18 @@ import { selectEquipmentById } from "../../equipments/equipmentsSlice"
 export default function EquipmentConsumptionChart({ id }: any) {
   const equipment = useAppSelector(state => selectEquipmentById(state, id))
   const status = useAppSelector(state => state.equipments.status)
-  const equipmentElectric = equipment?.collectors[0].records
+  const equipmentElectric = equipment?.collectors[0].records.map(record => ({
+    time: handleTimeChange(record.time),
+    quantity: record.quantity
+  }))
   const equipmentName = equipment?.name
 
-  const handleTimeChange = (data: any) => {
+  function handleTimeChange(data: any) {
     if (data) {
       const time = data.split("T")[1]
       const hourAndMin = time ? time.split(":").slice(0, 2) : null
       return hourAndMin ? hourAndMin.join(":") : null
     }
-  }
-
-  const CustomTooltip = ({ payload, label, active }: any) => {
-    if (active) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label ma0">{`${handleTimeChange(label)} `}</p>
-          <p className="label ma0">{`电量：${payload[0].value} kWh`}</p>
-        </div>
-      );
-    }
-    return null;
   }
 
   if (status === 'loading') {
@@ -62,7 +53,6 @@ export default function EquipmentConsumptionChart({ id }: any) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="time"
-          tickFormatter={(date) => handleTimeChange(date)}
         />
         <YAxis />
         <Tooltip />

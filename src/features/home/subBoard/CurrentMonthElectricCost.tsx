@@ -1,11 +1,39 @@
 import { ThunderboltOutlined } from "@ant-design/icons"
 import { ReactComponent as ElectricCostSVG } from '../../../assets/images/electricCost.svg'
 import { useHistory } from "react-router-dom"
+import { useState, useEffect } from 'react'
+import moment from 'moment'
+import axios from "axios"
 
 export default function CurrentMonthElectricCost() {
   const history = useHistory()
+  const [currentMonthData, setCurrentMonthData] = useState()
+  const [lastMonthData, setLastMonthData] = useState()
+
+  useEffect(() => {
+    const currentMondth = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
+    const lastMonth = moment().subtract(1, 'month').format('YYYY-MM-DDTHH:mm:ss[Z]')
+    const fetchData = async () => {
+      try {
+        const currentMonthRes: any = await axios.post(
+          "api/history/monthSum",
+          {month: currentMondth}
+        )
+        const lastMonthRes: any = await axios.post(
+          "api/history/monthSum",
+          {month: lastMonth}
+        )
+        setCurrentMonthData(currentMonthRes.data.data)
+        setLastMonthData(lastMonthRes.data.data)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+  }, [])
+
   const handleClick = () => {
-    history.push("/volume-analysis-month")
+    history.push("/volume-analysis")
   }
 
   return (
@@ -22,9 +50,8 @@ export default function CurrentMonthElectricCost() {
         </div>
         <div>
           <h4>本月用电</h4>
-          <p >{`5863.25 kWh`}</p>
-          <p>{`上月同期 9.6%`}</p>
-          <p>{`上月用电 5319.45 KWh`}</p>
+          <p >{`${currentMonthData} kWh`}</p>
+          <p>{`上月用电 ${lastMonthData} KWh`}</p>
         </div>
         <div className="flex justify-center items-center">
           <ElectricCostSVG 

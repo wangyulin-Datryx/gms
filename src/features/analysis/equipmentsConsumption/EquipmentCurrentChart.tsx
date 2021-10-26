@@ -16,35 +16,20 @@ export default function EquipmentCurrentChart({ id }:any) {
   const currentData = equipment?.collectors[0].records.map(data => {
     const current = JSON.parse(data.voltageCurrentAmount)
     return {
-      time: data.time,
+      time: handleTimeChange(data.time),
       A: current.electric_current_a,
       B: current.electric_current_b,
       C: current.electric_current_c
     }
   })
 
-  const handleTimeChange = (data: any) => {
+  function handleTimeChange (data: any) {
     if (data) {
       const time = data.split("T")[1]
       const hourAndMin = time ? time.split(":").slice(0, 2) : null
       return hourAndMin ? hourAndMin.join(":") : null
     }
     
-  }
-
-  const CustomTooltip = ({ payload, label, active }: any) => {
-    if (active) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label ma0">{`${handleTimeChange(label)} `}</p>
-          <p className="label ma0">{`A相电流：${payload[0].value} A`}</p>
-          <p className="label ma0">{`B相电流：${payload[1].value} A`}</p>
-          <p className="label ma0">{`C相电流：${payload[2].value} A`}</p>
-        </div>
-      );
-    }
-  
-    return null;
   }
   
   return (
@@ -62,7 +47,6 @@ export default function EquipmentCurrentChart({ id }:any) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis 
           dataKey="time"
-          tickFormatter={(date) => handleTimeChange(date)}
         />
         <YAxis />
         <Tooltip />

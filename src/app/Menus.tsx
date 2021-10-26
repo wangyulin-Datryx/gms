@@ -26,15 +26,9 @@ export default function Menus() {
         <Menu.Item key="equipment-consumption" icon={<VideoCameraOutlined />}>
           <Link to="/equipment-consumption">设备维度分析</Link>
         </Menu.Item>
-        <Menu.Item key="process-analysis" icon={<VideoCameraOutlined />}>
-          <Link to="/process-analysis">环节分析</Link>
+        <Menu.Item key="equipment-failure" icon={<VideoCameraOutlined />}>
+          <Link to="/equipment-failure-analysis">设备故障</Link>
         </Menu.Item>
-        <SubMenu key="equipment-failures" icon={<VideoCameraOutlined />} title="运行分析">
-          <Menu.Item key="equipment-failure" icon={<VideoCameraOutlined />}>
-            <Link to="/equipment-failure-analysis">设备故障</Link>
-          </Menu.Item>
-        </SubMenu>
-        
       </SubMenu>
       <Menu.Item key="3" icon={<UploadOutlined />}>
         诊断
