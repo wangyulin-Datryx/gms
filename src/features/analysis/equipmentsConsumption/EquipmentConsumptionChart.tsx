@@ -65,9 +65,9 @@ export default function EquipmentConsumptionChart({ id }: any) {
           tickFormatter={(date) => handleTimeChange(date)}
         />
         <YAxis />
-        <Tooltip content={<CustomTooltip />}/>
+        <Tooltip />
         <Legend />
-        <Line name={`${equipmentName}实时电量`} type="monotone" dataKey="quantity" stroke="#82ca9d" />
+        <Line dot={false} name={`${equipmentName}实时电量`} type="monotone" dataKey="quantity" stroke="#82ca9d" />
       </LineChart>
       </ResponsiveContainer>
     </div>

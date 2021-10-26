@@ -1,7 +1,7 @@
 import NavBar from '../../app/NavBar'
 import Header from '../../app/Header'
 import GMSEquipmentBoard from '../home/GMSEquipmentBoard'
-import YearVolumeAnalysis from '../analysis/YearVolumeAnalysis'
+import VolumeAnalysis from '../analysis/VolumeAnalysis'
 import MonthVolumeAnalysis from '../analysis/MonthVolumeAnalysis'
 import EquipmentsConsumption from '../analysis/equipmentsConsumption/EquipmentsConsumption'
 import EquipmentsFailureAnalysis from '../analysis/equipmentsFailure/EquipmentsFailureAnalysis'
@@ -36,11 +36,8 @@ const MainPage = () => {
               <Route exact path="/">
                 <GMSEquipmentBoard />
               </Route>
-              <Route exact path="/volume-analysis-year">
-                <YearVolumeAnalysis />
-              </Route>
-              <Route exact path="/volume-analysis-month">
-                <MonthVolumeAnalysis />
+              <Route exact path="/volume-analysis">
+                <VolumeAnalysis />
               </Route>
               <Route exact path="/equipment-consumption">
                 <EquipmentsConsumption />

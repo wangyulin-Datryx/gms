@@ -33,6 +33,7 @@ export default function EquipmentsConsumptionTable({ setId }:any) {
   return (
     <div>
       <List
+        header={<div>header</div>}
         itemLayout="horizontal"
         dataSource={data}
         renderItem={(item: any) => {

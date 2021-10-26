@@ -5,8 +5,8 @@ import { selectEquipments } from '../../equipments/equipmentsSlice'
 
 export default function DataEquipmentInfo() {
   const equipments = useAppSelector(selectEquipments)
-  const totalCollectors = equipments.length 
-  const onlineCollectors = equipments.map(equipment => equipment.collectors[0]?.status === 1).length
+  const totalCollectors = equipments.length - 1
+  const onlineCollectors = equipments.filter(equipment => equipment.status === 1).length -1
 
   const totalElectrics = totalCollectors
   const onlineElectrics = onlineCollectors

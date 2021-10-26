@@ -93,12 +93,13 @@ const ElectricCostChart = () => {
             <h1 className="f4 blue">用电量对比</h1>
           </Col>
           <Col md={10}>
-            <span>{`${someDataTotal} kWh`}</span>
+            <span>{`${someDataTotal?.toFixed(2)} kWh`}</span>
             <DatePicker 
               onChange={handleDateChange} 
               disabledDate={disabledDate}
+              defaultValue={moment().subtract(1, 'days')}
             />
-            <span>{`对比 ${todayCurrentData} kWh`}</span>
+            <span>{`对比今天 ${todayCurrentData?.toFixed(2)} kWh`}</span>
             <span>{`(截止${todayCurrentTime})`}</span>
           </Col>
         </Row>
@@ -126,12 +127,14 @@ const ElectricCostChart = () => {
             type="monotone"
             dataKey="yesQuantity"
             stroke="#8884d8"
+            dot={false}
           />
           <Line 
             name="今天" 
             type="monotone" 
             dataKey="toQuantity" 
             stroke="#82ca9d" 
+            dot={false}
           />
           </LineChart>
         </ResponsiveContainer>

@@ -17,9 +17,9 @@ export default function EquipmentCurrentChart({ id }:any) {
     const current = JSON.parse(data.voltageCurrentAmount)
     return {
       time: data.time,
-      A: current.electricCurrentA,
-      B: current.electricCurrentB,
-      C: current.electricCurrentC
+      A: current.electric_current_a,
+      B: current.electric_current_b,
+      C: current.electric_current_c
     }
   })
 
@@ -67,9 +67,9 @@ export default function EquipmentCurrentChart({ id }:any) {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line name="A相电流" type="monotone" dataKey="A" stroke="#82ca9d" />
-        <Line name="B相电流" type="monotone" dataKey="B" stroke="#c3b6e6" />
-        <Line name="C相电流" type="monotone" dataKey="C" stroke="#71d4d4" />
+        <Line dot={false} name="A相电流" type="monotone" dataKey="A" stroke="#82ca9d" />
+        <Line dot={false} name="B相电流" type="monotone" dataKey="B" stroke="#c3b6e6" />
+        <Line dot={false} name="C相电流" type="monotone" dataKey="C" stroke="#71d4d4" />
       </LineChart>
       </ResponsiveContainer>
     </div>

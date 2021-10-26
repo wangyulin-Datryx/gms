@@ -15,7 +15,8 @@ import {
   DeleteRowOutlined
 } from '@ant-design/icons';
 import ESGLogo from '../assets/images/esg1.png'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios';
 import Menus from './Menus';
 import './Header.css'
 
@@ -58,6 +59,30 @@ const UserTable = () => {
 
 const Header= () => {
   const [visible, setVisible] = useState(false)
+  const [logo, setLogo] = useState('')
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response:any = await axios.get(
+          "api/factory/logo", 
+           {responseType: 'arraybuffer'}
+        )
+        
+        const base64 = btoa(
+          new Uint8Array(response.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            '',
+          )
+        )
+        setLogo("data:;base64," + base64)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    fetchLogo()
+  },[])
+
   return (
     <Row 
       className='bg-white pt2' 
@@ -99,7 +124,7 @@ const Header= () => {
       </Col>
       <Col md={{span:2, order: 0}} xs={{order: 1}}>
       <img 
-        src={ESGLogo} 
+        src={logo} 
         alt="ESGlogo" 
         style={{width: '130px', height: '40px', borderRadius: "10px"}}
       />

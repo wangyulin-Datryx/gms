@@ -36,8 +36,8 @@ const renderCustomizedLabel = ({
 
 const EquipmentOnlineChart = () => {
   const equipments = useAppSelector(selectEquipments)
-  const onlineEquipments = equipments.map(equipment => equipment.status === 1).length
-  const offlineEquipments = equipments.length - onlineEquipments
+  const onlineEquipments = equipments.filter(equipment => equipment.status === 1).length - 1
+  const offlineEquipments = equipments.length - onlineEquipments - 1
 
   const data = [
     { name: "设备在线", value: onlineEquipments },

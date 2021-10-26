@@ -20,11 +20,8 @@ export default function Menus() {
         <Link to="/">首页</Link>
       </Menu.Item>
       <SubMenu key="analysis" icon={<ContainerOutlined />} title="分析">
-        <Menu.Item key="volume-analysis-year" icon={<VideoCameraOutlined />}>
-          <Link to="/volume-analysis-year">年用量分析</Link>
-        </Menu.Item>
-        <Menu.Item key="volume-analysis-month" icon={<VideoCameraOutlined />}>
-          <Link to="/volume-analysis-month">月用量分析</Link>
+        <Menu.Item key="volume-analysis" icon={<VideoCameraOutlined />}>
+          <Link to="/volume-analysis">用量分析</Link>
         </Menu.Item>
         <Menu.Item key="equipment-consumption" icon={<VideoCameraOutlined />}>
           <Link to="/equipment-consumption">设备维度分析</Link>
