@@ -2,23 +2,23 @@ import { ThunderboltOutlined } from "@ant-design/icons"
 import { ReactComponent as EquipmentSVG} from '../../../assets/images/equipment.svg'
 import { useHistory } from "react-router-dom"
 import { useAppSelector } from "../../../hook"
-import { selectEquipments } from "../../equipments/equipmentsSlice"
+import { selectEquipments } from "../../gmsBoard/realtimeSlice"
 import { List } from 'antd'
 
 export default function MainEquipmentInfo() {
   const history = useHistory()
   const allEquipments = useAppSelector(selectEquipments)
-  const allEquipmentsWithRecords = allEquipments.filter(
-    equipment => equipment.collectors[0].records.length> 0 && 
-    equipment.deviceId !== 0
+
+  const allEquipmentsWithRecords = allEquipments?.filter(
+    equipment => equipment.status === 1
   )
-  const data = allEquipmentsWithRecords.map(equipment => {
+  const data = allEquipmentsWithRecords?.map(equipment => {
     const length = equipment.collectors[0].records.length
     return {
       key: equipment.deviceId,
       id: equipment.deviceId, 
       name: equipment.name,
-      currentAmount: equipment.collectors[0].records[length-1].currentAmount
+      currentAmount: equipment.collectors[0].records[length-1]?.currentAmount
     }
   })
   data.sort((a, b) => (a.currentAmount > b.currentAmount) ? -1 : 1)

@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, Legend } from "recharts"
 import { useAppSelector } from "../../../hook"
-import { selectEquipments } from "../../equipments/equipmentsSlice"
+import { selectEquipments } from "../../gmsBoard/realtimeSlice"
 
 
 
@@ -36,8 +36,8 @@ const renderCustomizedLabel = ({
 
 const EquipmentOnlineChart = () => {
   const equipments = useAppSelector(selectEquipments)
-  const onlineEquipments = equipments.filter(equipment => equipment.status === 1).length - 1
-  const offlineEquipments = equipments.length - onlineEquipments - 1
+  const onlineEquipments = equipments.filter(equipment => equipment.status === 1).length 
+  const offlineEquipments = equipments.length - onlineEquipments 
 
   const data = [
     { name: "设备在线", value: onlineEquipments },

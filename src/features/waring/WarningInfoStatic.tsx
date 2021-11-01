@@ -1,21 +1,21 @@
 import { Tabs } from 'antd'
-import YearVolumeAanlysis from './YearVolumeAanlysis'
-import MonthVolumeAnalysis from './MonthVolumeAnalysis'
-import QuarteVolumeAnalysis from './QuarterVolumeAnalysis'
+import YearWarningStatic from './YearWarningStatic'
+import QuarterWarningStatic from './QuarterWarningStatic'
+import MonthWarningStatic from './MonthWarningStatic'
 
 const { TabPane } = Tabs
 
-export default function VolumeAnalysis() {
+export default function WarningInfoStatic() {
   return (
     <Tabs tabBarStyle={{marginLeft: '2rem', marginRight: '2rem'}} size='large' defaultActiveKey='年' className='pa3 bg-white'>
       <TabPane tab="年" key='年'>
-        <YearVolumeAanlysis />
+        <YearWarningStatic />
       </TabPane>
       <TabPane tab="季度" key="季度">
-        <QuarteVolumeAnalysis />
+        <QuarterWarningStatic />
       </TabPane>
       <TabPane tab="月" key="月">
-      <MonthVolumeAnalysis />
+      <MonthWarningStatic />
       </TabPane>
     </Tabs>
   )

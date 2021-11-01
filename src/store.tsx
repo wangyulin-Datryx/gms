@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit"
 
+import realtimeReducer from './features/gmsBoard/realtimeSlice'
+import ammetersReducer from './features/ammeter/ammeterSlice'
 import equipmentsReducer from './features/equipments/equipmentsSlice'
 
 const store = configureStore({
   reducer: {
-    equipments: equipmentsReducer,
+    realtime: realtimeReducer,
+    ammeters: ammetersReducer,
+    equipments: equipmentsReducer
   }
 })
 

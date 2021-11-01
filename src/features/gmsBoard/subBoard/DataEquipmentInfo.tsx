@@ -1,12 +1,12 @@
 import { Progress } from 'antd'
 import { useState } from 'react'
 import { useAppSelector } from '../../../hook'
-import { selectEquipments } from '../../equipments/equipmentsSlice'
+import { selectEquipments } from '../../gmsBoard/realtimeSlice'
 
 export default function DataEquipmentInfo() {
   const equipments = useAppSelector(selectEquipments)
-  const totalCollectors = equipments.length - 1
-  const onlineCollectors = equipments.filter(equipment => equipment.status === 1).length -1
+  const totalCollectors = equipments.length 
+  const onlineCollectors = equipments.filter(equipment => equipment.status === 1).length 
 
   const totalElectrics = totalCollectors
   const onlineElectrics = onlineCollectors

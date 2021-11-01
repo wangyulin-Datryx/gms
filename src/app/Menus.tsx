@@ -4,7 +4,10 @@ import {
   UserOutlined,
   UploadOutlined,
   VideoCameraOutlined,
-  ContainerOutlined
+  ContainerOutlined,
+  DesktopOutlined,
+  MonitorOutlined,
+  AlertOutlined
 } from '@ant-design/icons';
 
 const { SubMenu } = Menu
@@ -30,8 +33,17 @@ export default function Menus() {
           <Link to="/equipment-failure-analysis">设备故障</Link>
         </Menu.Item>
       </SubMenu>
-      <Menu.Item key="3" icon={<UploadOutlined />}>
-        诊断
+      <Menu.Item key="3" icon={<AlertOutlined />}>
+        <Link to="/warning-info-statics">预警信息</Link>
+      </Menu.Item>
+      <Menu.Item key="equipment-status" icon={<UploadOutlined />}>
+        <Link to="/equipment-status">设备状态</Link>
+      </Menu.Item>
+      <Menu.Item key="ammeter-management" icon={<MonitorOutlined />}>
+        <Link to="/ammeter-management">电表管理</Link>
+      </Menu.Item>
+      <Menu.Item key="equipment-management" icon={<DesktopOutlined />}>
+        <Link to="/equipment-management">设备管理</Link>
       </Menu.Item>
       {/* <Menu.Item key="4" icon={<BarChartOutlined />}>
         nav 4

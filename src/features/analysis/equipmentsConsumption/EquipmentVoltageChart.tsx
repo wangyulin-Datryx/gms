@@ -8,34 +8,58 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts"
-import { useAppSelector } from "../../../hook"
-import { selectEquipmentById } from "../../equipments/equipmentsSlice"
+import { useState, useEffect } from "react"
+import axios from "axios"
+import moment from 'moment'
 
-export default function EquipmentVoltageChart({ id }: any) {
-  const equipment = useAppSelector(state => selectEquipmentById(state, id))
-  const voltageData = equipment?.collectors[0].records.map(data => {
-    const current = JSON.parse(data.voltageCurrentAmount)
-    return {
-      time: handleTimeChange(data.time),
-      A: current.electric_voltage_a,
-      B: current.electric_voltage_b,
-      C: current.electric_voltage_c
-    }
-  })
-  function handleTimeChange (data: any) {
-    if (data) {
-      const time = data.split("T")[1]
-      const hourAndMin = time ? time.split(":").slice(0, 2) : null
-      return hourAndMin ? hourAndMin.join(":") : null
-    }
+const today = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
+
+export default function EquipmentVoltageChart({ status, data }: any) {
+  // console.log('id', id)
+  // const [currentEquipment, setCurrentEquipment] = useState([])
+
+  // const fetchEquipment = async () => {
+  //   const response: any = await axios.post('api/device/currentSearch', {
+  //     deviceId: id,
+  //     time: today
+  //   })
+  //   setCurrentEquipment(response.data.data)
+  // }
+
+  // useEffect(() => {
+  //   fetchEquipment()
+  // }, [id])
+
+  // useEffect(() => {
+  //   let timer = setTimeout(() => {
+  //     fetchEquipment()
+  //   }, 2 * 1000 *60)
+  //   return () => clearTimeout(timer)
+  // }, [id])
+
+  // const currentData = currentEquipment?.map((data: any) => {
+  //   return {
+  //     time: handleTimeChange(data.time),
+  //     A: data.electricCurrentA,
+  //     B: data.electricCurrentB,
+  //     C: data.electricCurrentC,
+  //   }
+  // })
+
+  // function handleTimeChange (data: any) {
+  //   if (data) {
+  //     const time = data.split("T")[1]
+  //     const hourAndMin = time ? time.split(":").slice(0, 2) : null
+  //     return hourAndMin ? hourAndMin.join(":") : null
+  //   }
     
-  }
+  // }
 
   return (
     <div>
       <ResponsiveContainer width='100%' height={350}>
       <LineChart
-        data={voltageData}
+        data={data}
         margin={{
           top: 5,
           right: 5,

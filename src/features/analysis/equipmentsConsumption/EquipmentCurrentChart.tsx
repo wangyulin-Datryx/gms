@@ -9,34 +9,59 @@ import {
   ResponsiveContainer
 } from "recharts"
 import { useAppSelector } from "../../../hook"
-import { selectEquipmentById } from "../../equipments/equipmentsSlice"
+import { selectEquipmentById } from "../../gmsBoard/realtimeSlice"
+import axios from "axios"
+import { useState, useEffect } from 'react'
+import moment from 'moment'
 
-export default function EquipmentCurrentChart({ id }:any) {
-  const equipment = useAppSelector(state => selectEquipmentById(state, id))
-  const currentData = equipment?.collectors[0].records.map(data => {
-    const current = JSON.parse(data.voltageCurrentAmount)
-    return {
-      time: handleTimeChange(data.time),
-      A: current.electric_current_a,
-      B: current.electric_current_b,
-      C: current.electric_current_c
-    }
-  })
+const today = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
 
-  function handleTimeChange (data: any) {
-    if (data) {
-      const time = data.split("T")[1]
-      const hourAndMin = time ? time.split(":").slice(0, 2) : null
-      return hourAndMin ? hourAndMin.join(":") : null
-    }
+export default function EquipmentCurrentChart({ status, data }:any) {
+  // const [currentEquipment, setCurrentEquipment] = useState([])
+
+  // const fetchEquipment = async () => {
+  //   const response: any = await axios.post('api/device/currentSearch', {
+  //     deviceId: id,
+  //     time: today
+  //   })
+  //   console.log('current', response.data.data)
+  //   setCurrentEquipment(response.data.data)
+  // }
+
+  // useEffect(() => {
+  //   fetchEquipment()
+  // }, [id])
+
+  // useEffect(() => {
+  //   let timer = setTimeout(() => {
+  //     fetchEquipment()
+  //   }, 2 * 1000 * 60);
+  //   return () => clearTimeout(timer)
+  // },[id])
+
+  // const currentData = currentEquipment?.map((data: any) => {
+  //   return {
+  //     time: handleTimeChange(data.time),
+  //     A: data.electricCurrentA,
+  //     B: data.electricCurrentB,
+  //     C: data.electricCurrentC,
+  //   }
+  // })
+
+  // function handleTimeChange (data: any) {
+  //   if (data) {
+  //     const time = data.split("T")[1]
+  //     const hourAndMin = time ? time.split(":").slice(0, 2) : null
+  //     return hourAndMin ? hourAndMin.join(":") : null
+  //   }
     
-  }
+  // }
   
   return (
     <div>
       <ResponsiveContainer width='100%' height={350}>
       <LineChart
-        data={currentData}
+        data={data}
         margin={{
           top: 5,
           right: 5,

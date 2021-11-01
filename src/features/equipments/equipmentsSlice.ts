@@ -1,40 +1,22 @@
-import { 
+import {
   createSlice,
   createAsyncThunk,
   createEntityAdapter
 } from "@reduxjs/toolkit"
 import axios from "axios"
 
-import type { RootState } from "../../store"
+import type { RootState } from '../../store'
 
-export interface ElectricConsumption {
-  quantity: number;
-  time: string;
-  currentAmount: number;
-  voltageCurrentAmount: any;
-}
-
-export interface Collector {
-  collectorId: number;
-  name: string;
-  status: number;
-  records: ElectricConsumption[]
-}
-
-export interface EquipmentType {
+interface Iequipment {
   deviceId: number;
   name: string;
   status: number;
-  collectors: Collector[]
+  info: string;
+  collectors: any[]
 }
 
-const equipmentsAdapter = createEntityAdapter<EquipmentType>({
-  selectId: (equipment: EquipmentType) => equipment.deviceId,
-  sortComparer: (a, b) => {
-    const arecords = a.collectors[0]?.records
-    const brecords = b.collectors[0]?.records
-    return brecords[brecords.length - 1]?.currentAmount - arecords[arecords.length - 1]?.currentAmount
-  }
+const equipmentsAdapter = createEntityAdapter<Iequipment>({
+  selectId: (equipment: Iequipment) => equipment.deviceId
 })
 
 const initialState = equipmentsAdapter.getInitialState({
@@ -42,16 +24,29 @@ const initialState = equipmentsAdapter.getInitialState({
   error: ''
 })
 
-//Thunk function
-export const fetchEquipments = createAsyncThunk('equipments/fetchEquipments', async () => {
-  const response:any = await axios.post('api/history/searchAll',{
-    deviceId: 0
-  })
-  const sumResponse: any = await axios.post('api/history/search', {
-    deviceId: 0
-  })
-  return [...response.data.data, sumResponse.data.data]
-})
+//Thunk
+export const fetchAllEquipments = createAsyncThunk(
+  'allEquipments/fetchAllEquipments',
+  async () => {
+    const response:any = await axios('api/device/searchAll')
+    return response.data.data
+  }
+)
+
+export const addEquipment = createAsyncThunk(
+  'allEquipments/addEquipment',
+  async (equipment: any) => {
+    const {name, type, info, capacity, comment} = equipment
+    const response: any = await axios.post('api/device/addDevice', {
+      name,
+      type,
+      info,
+      capacity,
+      comment
+    })
+    return response.data.data
+  }
+)
 
 const equipmentsSlice = createSlice({
   name: 'equipments',
@@ -59,22 +54,23 @@ const equipmentsSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchEquipments.pending, (state, action) => {
+      .addCase(fetchAllEquipments.pending, (state, action) => {
         state.status = 'loading'
       })
-      .addCase(fetchEquipments.fulfilled, (state, action) => {
-        state.status = 'succeeded'
+      .addCase(fetchAllEquipments.fulfilled, (state, action) => {
+        state.status = 'succeed'
         equipmentsAdapter.setAll(state, action.payload)
       })
-      .addCase(fetchEquipments.rejected, (state, action) => {
+      .addCase(fetchAllEquipments.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.error.message as string
+        state.error = action.error?.message as string
       })
+      .addCase(addEquipment.fulfilled, equipmentsAdapter.addOne)
   }
 })
 
 export default equipmentsSlice.reducer
-export const { 
-  selectAll: selectEquipments,
+export const {
+  selectAll: selectAllEquipments,
   selectById: selectEquipmentById
 } = equipmentsAdapter.getSelectors((state: RootState) => state.equipments)

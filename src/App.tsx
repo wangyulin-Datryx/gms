@@ -2,8 +2,9 @@ import './App.css'
 import MainPage from './features/mainPage/MainPage'
 import Login from './app/Login'
 import axios from 'axios'
-import { fetchEquipments } from './features/equipments/equipmentsSlice'
+import { fetchEquipments } from './features/gmsBoard/realtimeSlice'
 import store from './store'
+
 
 const App = () => {
   if (!localStorage.getItem('loginToken')) {

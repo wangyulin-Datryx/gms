@@ -7,8 +7,8 @@ import axios from "axios"
 
 export default function CurrentMonthElectricCost() {
   const history = useHistory()
-  const [currentMonthData, setCurrentMonthData] = useState()
-  const [lastMonthData, setLastMonthData] = useState()
+  const [currentMonthData, setCurrentMonthData] = useState<number>()
+  const [lastMonthData, setLastMonthData] = useState<number>()
 
   useEffect(() => {
     const currentMondth = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
@@ -50,7 +50,7 @@ export default function CurrentMonthElectricCost() {
         </div>
         <div>
           <h4>本月用电</h4>
-          <p >{`${currentMonthData} kWh`}</p>
+          <p >{`${currentMonthData?.toFixed(2)} kWh`}</p>
           <p>{`上月用电 ${lastMonthData} KWh`}</p>
         </div>
         <div className="flex justify-center items-center">

@@ -4,34 +4,89 @@ import EquipmentCurrentChart from './EquipmentCurrentChart'
 import EquipmentVoltageChart from './EquipmentVoltageChart'
 import { useState, useEffect } from 'react'
 import { useAppSelector } from '../../../hook'
-import { selectEquipments } from '../../equipments/equipmentsSlice'
+import { selectEquipments } from '../../gmsBoard/realtimeSlice'
 import { ReactComponent as Arrow } from '../../../assets/images/arrow.svg'
 import './EquipmentsConsumption.css'
+import moment from 'moment'
+import axios from 'axios'
+import { handleTimeChange } from '../../../app/utils'
+
+const today = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
 
 export default function EquipmentsConsumption() {
-  const ids = useAppSelector(state => state.equipments.ids)
+  const ids = useAppSelector(state => state.realtime.ids)
   const allEquipments = useAppSelector(selectEquipments)
-  const [id, setId] = useState(ids[1])
-  const allEquipmentsWithRecords = allEquipments.filter(
-    equipment => equipment.collectors[0].records.length> 0 && 
-    equipment.deviceId !== 0
+  const [id, setId] = useState(ids[0])
+  const onlineEquipments = allEquipments?.filter(
+    equipment => equipment.status === 1
   )
-  const data = allEquipmentsWithRecords.map(equipment => {
-    const length = equipment.collectors[0].records.length
+  const data = onlineEquipments.map(equipment => {
+    const length = equipment.collectors[0]?.records?.length
     return {
       key: equipment.deviceId,
       id: equipment.deviceId, 
       name: equipment.name,
-      currentAmount: equipment.collectors[0].records[length-1].currentAmount
+      currentAmount: equipment.collectors[0].records[length-1]?.currentAmount
     }
   })
   data.sort((a, b) => (a.currentAmount > b.currentAmount) ? -1 : 1)
 
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [requestStatus, setRequestStatus] = useState('idle')
+  const [realtimeData, setRealtimeData] = useState<any[]>()
+  const [currentData, setCurrentData] = useState<any[]>()
+  const [voltageData, setVoltageData] = useState<any[]>()
 
   useEffect(() => {
-    setId(ids[1])
+    setId(ids[0])
   }, [ids])
+
+  const fetchData = async () => {
+    try {
+      setRequestStatus('loading')
+      const response: any = await axios.post('api/device/currentSearch', {
+        deviceId: id,
+        time: today
+      })
+      const currentEquipment = response.data.data
+      const currentData = currentEquipment?.map((data: any) => {
+        return {
+          time: handleTimeChange(data.time),
+          A: data.electricCurrentA,
+          B: data.electricCurrentB,
+          C: data.electricCurrentC,
+        }
+      })
+      const realtimeData = currentEquipment?.map((data: any) => {
+        return {
+          time: handleTimeChange(data.time),
+          quantity: data.quantity,
+        }
+      })
+      const voltageData = currentEquipment?.map((data: any) => {
+        return {
+          time: handleTimeChange(data.time),
+          A: data.electricVoltageA,
+          B: data.electricVoltageB,
+          C: data.electricVoltageC,
+        }
+      })
+      setCurrentData(currentData)
+      setVoltageData(voltageData)
+      setRealtimeData(realtimeData)
+    } catch (err) {
+      setRequestStatus('failed')
+      console.log('Failed to get equipment data: ', err)
+    } finally {
+      setRequestStatus('idle')
+    }
+  }
+
+  useEffect(() => {
+    if (id && requestStatus === 'idle') {
+      fetchData()
+    }
+  }, [id, requestStatus, fetchData])
 
   const handleClick = (id: number, index: number) => {
     setId(id)
@@ -75,13 +130,13 @@ export default function EquipmentsConsumption() {
         <Col lg={18} xs={24}>
         <Row>
           <Col span={24} xs={24}>
-            <EquipmentConsumptionChart id={id}/>
+            <EquipmentConsumptionChart status={requestStatus} data={realtimeData}/>
           </Col>
           <Col span={12} xs={24}>
-            <EquipmentCurrentChart id={id}/>
+            <EquipmentCurrentChart status={requestStatus} data={currentData}/>
           </Col>
           <Col span={12} xs={24}>
-            <EquipmentVoltageChart id={id}/>
+            <EquipmentVoltageChart status={requestStatus} data={voltageData}/>
           </Col>
         </Row>
         </Col>
