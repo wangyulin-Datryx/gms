@@ -35,7 +35,9 @@ const realtimeAdapter = createEntityAdapter<EquipmentType>({
   sortComparer: (a, b) => {
     const arecords = a.collectors[0]?.records
     const brecords = b.collectors[0]?.records
-    return brecords[brecords.length - 1]?.currentAmount - arecords[arecords.length - 1]?.currentAmount
+    const aCurrentAmount = arecords && arecords[arecords.length - 1]?.currentAmount
+    const bCurrentAmount = brecords && brecords[brecords.length - 1]?.currentAmount
+    return bCurrentAmount - aCurrentAmount
   }
 })
 

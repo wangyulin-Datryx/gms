@@ -9,6 +9,9 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { Row, Col } from 'antd'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import moment from 'moment'
 
 const data = [
   {
@@ -29,8 +32,46 @@ const data = [
   }
 ];
 
+const currentYear = moment().year()
 
 export default function QuarterVolumeAanlysis() {
+  const [yearPowerConsumption, setYearPowerConsumption] = useState<any[]>([])
+  const [yearToyear, setYearToyear] = useState<any[]>([])
+  const [monthTomonth, setMonthTomonth] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: any = await axios.post("api/analysis/search", 
+          {time: new Date(`${currentYear}`).getTime(), type: 'season'}
+        )
+        const powerConsumption = response.data.map((month: any, index: number) => {
+          return {
+            name: `${index+1}季度`,
+            电量: month.powerConsumption
+          }
+        })
+        const yearTyear = response.data.map((month: any, index: number) => {
+          return {
+            name: `${index+1}季度`,
+            电量: month.powerConsumptionYoy
+          }
+        })
+        const monthTmonth = response.data.map((month: any, index: number) => {
+          return {
+            name: `${index+1}季度`,
+            电量: month.powerConsumptionMom
+          }
+        })
+        setYearPowerConsumption(powerConsumption)
+        setYearToyear(yearTyear)
+        setMonthTomonth(monthTmonth)
+      } catch (err) {
+        console.log('Failed to get year analysis data: ', err)
+      }
+    }
+    fetchData()
+  }, [])
   
   return (
     <>
@@ -42,7 +83,7 @@ export default function QuarterVolumeAanlysis() {
           </div>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
-            data={data}
+            data={yearPowerConsumption}
             margin={{
               top: 20,
               right: 20,
@@ -65,7 +106,7 @@ export default function QuarterVolumeAanlysis() {
             <h1 className="blue f3 ml4">同比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={yearToyear}
               margin={{
                 top: 20,
                 right: 20,
@@ -88,7 +129,7 @@ export default function QuarterVolumeAanlysis() {
             <h1 className="blue f3 ml4">环比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={monthTomonth}
               margin={{
                 top: 20,
                 right: 20,

@@ -15,46 +15,6 @@ import moment from 'moment'
 const today = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
 
 export default function EquipmentVoltageChart({ status, data }: any) {
-  // console.log('id', id)
-  // const [currentEquipment, setCurrentEquipment] = useState([])
-
-  // const fetchEquipment = async () => {
-  //   const response: any = await axios.post('api/device/currentSearch', {
-  //     deviceId: id,
-  //     time: today
-  //   })
-  //   setCurrentEquipment(response.data.data)
-  // }
-
-  // useEffect(() => {
-  //   fetchEquipment()
-  // }, [id])
-
-  // useEffect(() => {
-  //   let timer = setTimeout(() => {
-  //     fetchEquipment()
-  //   }, 2 * 1000 *60)
-  //   return () => clearTimeout(timer)
-  // }, [id])
-
-  // const currentData = currentEquipment?.map((data: any) => {
-  //   return {
-  //     time: handleTimeChange(data.time),
-  //     A: data.electricCurrentA,
-  //     B: data.electricCurrentB,
-  //     C: data.electricCurrentC,
-  //   }
-  // })
-
-  // function handleTimeChange (data: any) {
-  //   if (data) {
-  //     const time = data.split("T")[1]
-  //     const hourAndMin = time ? time.split(":").slice(0, 2) : null
-  //     return hourAndMin ? hourAndMin.join(":") : null
-  //   }
-    
-  // }
-
   return (
     <div>
       <ResponsiveContainer width='100%' height={350}>

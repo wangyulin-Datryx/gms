@@ -9,66 +9,55 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { Row, Col, DatePicker } from 'antd'
-import { useState } from 'react'
 import moment from 'moment'
-
-const data = [
-  {
-    name: '1月',
-    电量: 590,
-  },
-  {
-    name: '2月',
-    电量: 868,
-  },
-  {
-    name: '3月',
-    电量: 1397,
-  },
-  {
-    name: '4月',
-    电量: 1480,
-  },
-  {
-    name: '5月',
-    电量: 1520,
-  },
-  {
-    name: '6月',
-    电量: 1400,
-  },
-  {
-    name: '7月',
-    电量: 1200,
-  },
-  {
-    name: '8月',
-    电量: 1400,
-  },
-  {
-    name: '9月',
-    电量: 1800,
-  },
-  {
-    name: '10月',
-    电量: 1400,
-  },
-  {
-    name: '11月',
-    电量: 1400,
-  },
-  {
-    name: '12月',
-    电量: 1600,
-  },
-];
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 const currentYear = moment().year()
 
 export default function YearVolumeAanlysis() {
   const [year, setYear] = useState(currentYear)
+  const [yearPowerConsumption, setYearPowerConsumption] = useState<any[]>([])
+  const [yearToyear, setYearToyear] = useState<any[]>([])
+  const [monthTomonth, setMonthTomonth] = useState<any[]>([])
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: any = await axios.post("api/analysis/search", 
+          {time: new Date(`${year}`).getTime(), type: 'year'}
+        )
+        const powerConsumption = response.data.map((month: any, index: number) => {
+          return {
+            name: `${index+1}月`,
+            电量: month.powerConsumption
+          }
+        })
+        const yearTyear = response.data.map((month: any, index: number) => {
+          return {
+            name: `${index+1}月`,
+            电量: month.powerConsumptionYoy
+          }
+        })
+        const monthTmonth = response.data.map((month: any, index: number) => {
+          return {
+            name: `${index+1}月`,
+            电量: month.powerConsumptionMom
+          }
+        })
+        setYearPowerConsumption(powerConsumption)
+        setYearToyear(yearTyear)
+        setMonthTomonth(monthTmonth)
+      } catch (err) {
+        console.log('Failed to get year analysis data: ', err)
+      }
+    }
+    fetchData()
+  }, [year])
 
   function onChange(date: any, dateString: any) {
+    console.log('datestring', dateString)
     setYear(dateString)
   }
   
@@ -87,7 +76,7 @@ export default function YearVolumeAanlysis() {
           </div>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
-            data={data}
+            data={yearPowerConsumption}
             margin={{
               top: 20,
               right: 20,
@@ -110,7 +99,7 @@ export default function YearVolumeAanlysis() {
             <h1 className="blue f3 ml4">上年同比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={yearToyear}
               margin={{
                 top: 20,
                 right: 20,
@@ -133,7 +122,7 @@ export default function YearVolumeAanlysis() {
             <h1 className="blue f3 ml4">上年环比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={monthTomonth}
               margin={{
                 top: 20,
                 right: 20,

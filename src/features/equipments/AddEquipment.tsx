@@ -2,10 +2,7 @@ import { Form, Row, Col, Button, Input } from 'antd'
 import { useAppDispatch } from '../../hook'
 import { addEquipment } from './equipmentsSlice'
 import { useState } from 'react'
-import equipmentsFormItem from './equipmentsFormItem'
-
-
-const filedName: any = [['设备名称', 'name', true], ['设备类型', 'type', true], ['功率', 'info', true], ['产能', 'capacity', true], ['备注', 'comment', false]]
+import { equipmentsFormItem } from './equipmentsFormItem'
 
 export default function AddAEquipment() {
   const [form] = Form.useForm()
@@ -14,13 +11,12 @@ export default function AddAEquipment() {
 
   const canAdd = addRequestStatus === 'idle'
 
-
-
   const onFinish = async (values: any) => {
     if (canAdd) {
       try {
         setAddRequestStatus('pending')
         await dispatch(addEquipment(values))
+        form.resetFields()
       } catch (error) {
         console.log('Failed to add new equipment: ', error)
       } finally {

@@ -7,16 +7,16 @@ import axios from 'axios'
 
 type DataSourceType = {
   id: React.Key;
-  collectorId?: number;
+  deviceId?: number;
+  name?: string;
   type?: string;
   status?: number;
-  GPRSID?: string;
-  sensor?: string;
-  equipment?: string;
-  info?: string;
+  kwh?: number;
+  capacity?: number;
+  comments?: string;
 }
 
-export default function AmmeterManagement (){
+export default function EditableTable (){
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
@@ -31,14 +31,14 @@ export default function AmmeterManagement (){
       hideInSearch: true
     },
     {
-      title: '电表编号',
-      dataIndex: 'collectorId',
-      key: 'collectorId',
+      title: '设备编号',
+      dataIndex: 'deviceId',
+      key: 'deviceId',
       editable: false,
     },
     {
-      title: '电表型号',
-      dataIndex: 'type',
+      title: '设备名称',
+      dataIndex: 'name',
       formItemProps: (form, { rowIndex }) => {
         return {
           rules:  [{ required: true, message: '此项为必填项' }] ,
@@ -47,35 +47,26 @@ export default function AmmeterManagement (){
       responsive: ['md']
     },
     {
-      title: '电表状态',
+      title: '设备状态',
       key: 'status',
       dataIndex: 'status',
       render: (text: any) => text === 1? "在线":"离线" ,
       editable: false,
     },
     {
-      title: 'GPRSID',
-      key: 'GPRSID',
-      dataIndex: 'GPRSID',
+      title: '功率',
+      key: 'kwh',
+      dataIndex: 'kwh',
       responsive: ['md']
     },
     {
-      title: '互感器型号',
-      dataIndex: 'sensor',
+      title: '产能',
+      dataIndex: 'capacity',
       responsive: ['md']
-    },
-    {
-      title: '对应设备',
-      dataIndex: 'equipment',
-      valueType: 'select',
-      valueEnum: {
-        1: 2,
-        2: 3
-      }
     },
     {
       title: '备注',
-      dataIndex: 'info',
+      dataIndex: 'comments',
       hideInSearch: true,
       responsive: ['xl']
     },
@@ -105,7 +96,7 @@ export default function AmmeterManagement (){
   ];
 
   return (
-    <div className="bg-white pa3">
+    <>
       <EditableProTable<DataSourceType>
         rowKey="id"
         columns={columns}
@@ -116,9 +107,9 @@ export default function AmmeterManagement (){
         }}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          const response:any = await axios('api/collector/searchAll')
-          const data = response.data.data.map((ammeter: any, index: number) => ({
-            ...ammeter,
+          const response:any = await axios('api/device/searchAll')
+          const data = response.data.data.map((device: any, index: number) => ({
+            ...device,
             id: index
           }))
           return {data: data, success: true}
@@ -146,6 +137,6 @@ export default function AmmeterManagement (){
             : false
         }
       />
-    </div>
+    </>
   );
 };

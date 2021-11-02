@@ -8,39 +8,41 @@ import {
   Legend,
   Bar,
 } from 'recharts'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import moment from 'moment'
 
-const data = [
-  {
-    name: '设备停机',
-    次数: 590,
-  },
-  {
-    name: '超用量',
-    次数: 868,
-  },
-  {
-    name: '电压不足',
-    次数: 1397,
-  },
-  {
-    name: '采集器短路',
-    次数: 1480,
-  },
-  {
-    name: '电流过载',
-    次数: 1520,
-  },
-  {
-    name: '电压过载',
-    次数: 1400,
-  },
-]
+const date = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
 
 export default function WarningTypeBar() {
+  const [warningTypeData, setWarningTypeData] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: any = await axios.post('api/history/countByTypeWarnings',
+          {month: date}
+        )
+        const data = response.data.data && response.data.data[0]
+        const warningData = [
+          {name: '超电流', 次数: data.type1},
+          {name: '电流不足', 次数: data.type2},
+          {name: '超电压', 次数: data.type3},
+          {name: '电压不足', 次数: data.type4},
+          {name: '设备离线', 次数: data.type5}
+        ]
+        setWarningTypeData(warningData)
+      } catch (err) {
+        console.log("Failed to get warning type data: ", err)
+      }
+    }
+    fetchData()
+  }, [])
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <ComposedChart
-        data={data}
+        data={warningTypeData}
         margin={{
           top: 20,
           right: 5,

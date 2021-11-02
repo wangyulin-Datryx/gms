@@ -1,7 +1,6 @@
 import { Col, Form, Input } from 'antd'
 
-export default function equipmentsFormItem() {
-  return (
+export const equipmentsFormItem = (
     <>
     <Col span={8} key='1'>
       <Form.Item
@@ -33,7 +32,7 @@ export default function equipmentsFormItem() {
     </Col>
     <Col span={8} key='3'>
       <Form.Item
-        name='info'
+        name='kwh'
         label='功率'
         rules={[
           {
@@ -61,7 +60,7 @@ export default function equipmentsFormItem() {
     </Col>
     <Col span={8} key='5'>
       <Form.Item
-        name='comment'
+        name='info'
         label='备注'
         rules={[
           {
@@ -75,4 +74,3 @@ export default function equipmentsFormItem() {
     </Col>
     </>
   )
-}
