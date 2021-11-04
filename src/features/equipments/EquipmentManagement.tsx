@@ -19,33 +19,3 @@ export default function EquipmentManagement() {
   )
 }
 
-//  const dispatch = useAppDispatch()
-//   const history = useHistory()
-//   const allEquipmentsInfo = useAppSelector(selectAllEquipments)
-//   const fetchStatus = useAppSelector((state) => state.equipments.status)
-//   const error = useAppSelector(state => state.equipments.error)
-//   const tableData = allEquipmentsInfo.map(equipment => {
-//     return {
-//       ...equipment,
-//       key: equipment.deviceId
-//     }
-//   })
-
-//   useEffect(() => {
-//     if (fetchStatus === 'idle') {
-//       dispatch(fetchAllEquipments())
-//     }
-//   }, [fetchStatus, dispatch])
-
-//   let content
-
-//   if (fetchStatus === 'loading') {
-//     content = <Spin />
-//   } else if (fetchStatus === 'succeed') {
-//     content = <EditableTable />
-//   }
-
-//   const handleAddButton = () => {
-//     history.push("/add-equipment")
-//   }
-

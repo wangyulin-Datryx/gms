@@ -91,6 +91,7 @@ export default function YearStatusStatic() {
             strokeColor={progressColor}
           />
         </div> */}
+
       </div>
     )
   }

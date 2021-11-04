@@ -39,8 +39,10 @@ const ElectricCostChart = () => {
   const renderPhaseTick = (tickProps: any):any => {
     const { x, y, payload } = tickProps;
     const { value, offset } = payload;
-  
-    if (value === "16:00") {
+    // if (value === "06:00" || value === '22:00') {
+    //    return <path d={`M${x},${y - 4}v${-35}`} stroke="red" />;
+    // }
+    if (value === "15:00") {
       return <text x={x} y={y-4} stroke="rgb(231, 143, 19)" textAnchor="middle">{`峰时段06:00 - 22:00`}</text>;
     }
     return null;
@@ -58,10 +60,10 @@ const ElectricCostChart = () => {
     <>
       <div >
         <Row className="pa3" align="middle">
-          <Col md={3} xs={24}>
+          <Col md={4} xs={24}>
             <h1 className="f4 blue">用电量对比</h1>
           </Col>
-          <Col md={10}>
+          <Col md={20}>
             <span>{`${somedayTotal?.toFixed(2)} kWh`}</span>
             <DatePicker 
               onChange={handleDateChange} 
@@ -115,11 +117,14 @@ const ElectricCostChart = () => {
             stroke="#82ca9d" 
             dot={false}
           />
-          <ReferenceLine 
+          {/* <ReferenceLine 
             stroke="rgb(231, 143, 19)" 
             strokeWidth={3}
             segment={[{ x: '06:00', y: 0 }, { x: '22:00', y: 0 }]} 
-          />
+          /> */}
+          <ReferenceLine x="06:00" stroke="rgb(231, 143, 19)" strokeDasharray="3 3" />
+          <ReferenceLine x="22:00" stroke="rgb(231, 143, 19)" strokeDasharray="3 3" />
+          
           </LineChart>
         </ResponsiveContainer>
         </div>

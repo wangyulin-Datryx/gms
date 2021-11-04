@@ -28,27 +28,17 @@ export default function YearVolumeAanlysis() {
         const response: any = await axios.post("api/analysis/search", 
           {time: new Date(`${year}`).getTime(), type: 'year'}
         )
-        const powerConsumption = response.data.map((month: any, index: number) => {
-          return {
-            name: `${index+1}月`,
-            电量: month.powerConsumption
-          }
-        })
-        const yearTyear = response.data.map((month: any, index: number) => {
-          return {
-            name: `${index+1}月`,
-            电量: month.powerConsumptionYoy
-          }
-        })
-        const monthTmonth = response.data.map((month: any, index: number) => {
-          return {
-            name: `${index+1}月`,
-            电量: month.powerConsumptionMom
-          }
+        let powerConsumption: any[] = []
+        let yearOnYear: any[] = []
+        let monthOnMonth: any[] = []
+        response.data.forEach((month: any, index: number) => {
+          powerConsumption.push({name: `${index+1}月`, 电量: month.powerConsumption})
+          yearOnYear.push({name: `${index+1}月`, 电量: month.powerConsumptionYoy})
+          monthOnMonth.push({name: `${index+1}月`, 电量: month.powerConsumptionMom})
         })
         setYearPowerConsumption(powerConsumption)
-        setYearToyear(yearTyear)
-        setMonthTomonth(monthTmonth)
+        setYearToyear(yearOnYear)
+        setMonthTomonth(monthOnMonth)
       } catch (err) {
         console.log('Failed to get year analysis data: ', err)
       }
@@ -136,7 +126,6 @@ export default function YearVolumeAanlysis() {
             <Tooltip />
             <Legend />
             <Bar dataKey="电量" barSize={20} fill="#413ea0" />
-            {/* <Bar dataKey="水量" barSize={20} fill="#ff7300" /> */}
             </ComposedChart>
             </ResponsiveContainer> 
           </div>

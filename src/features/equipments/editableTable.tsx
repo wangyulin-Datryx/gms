@@ -7,9 +7,8 @@ import axios from 'axios'
 
 type DataSourceType = {
   id: React.Key;
-  deviceId?: number;
   name?: string;
-  type?: string;
+  info?: string;
   status?: number;
   kwh?: number;
   capacity?: number;
@@ -23,17 +22,9 @@ export default function EditableTable (){
 
   const columns: ProColumns<DataSourceType>[] = [
     {
-      title: '序号',
+      title: '设备编号',
       dataIndex: 'id',
       key: 'id',
-      editable: false,
-      hideInTable: true,
-      hideInSearch: true
-    },
-    {
-      title: '设备编号',
-      dataIndex: 'deviceId',
-      key: 'deviceId',
       editable: false,
     },
     {
@@ -85,8 +76,16 @@ export default function EditableTable (){
         </a>,
         <a
           key="delete"
-          onClick={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id))
+          onClick={async() => {
+            try {
+              const deleteResponse: any = await axios.post(`api/device/deleteDevice?id=${record.id}`)
+              if (deleteResponse.status == 200) {
+                setDataSource(dataSource.filter((item) => item.id !== record.id))
+              }
+              console.log('delete', deleteResponse)
+            } catch (err) {
+              console.log("Failed to delete equipment: ", err)
+            }
           }}
         >
           删除
@@ -94,6 +93,15 @@ export default function EditableTable (){
       ],
     },
   ];
+
+  function transferStatus(status: any) {
+    if (status === '在线') {
+      return '1'
+    } else if (status === '离线') {
+      return '0'
+    }
+    return null
+  }
 
   return (
     <>
@@ -107,35 +115,49 @@ export default function EditableTable (){
         }}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          const response:any = await axios('api/device/searchAll')
-          const data = response.data.data.map((device: any, index: number) => ({
-            ...device,
-            id: index
-          }))
-          return {data: data, success: true}
+          let status = transferStatus(params.status)
+          const searchParams = {
+            ...params, 
+            status, 
+            name: params.name?.trim() || null, 
+            id: params.id?.trim() || null,
+            kwh: params.kwh?.trim() || null,
+            capacity: params.capacity?.trim() || null
+          }
+          const response:any = await axios.post('api/device/searchAll', searchParams)
+          console.log('search', searchParams)
+          return {data: response.data.data, success: true}
         }}
         search={{
           layout: 'vertical',
-          defaultCollapsed: false,
+          defaultCollapsed: true,
         }}
         editable={{
           type: 'multiple',
           editableKeys,
           onSave: async (rowKey, data, row) => {
-            console.log(data);
-            
+            console.log('update', data)
+            try {
+              const response: any = await axios.post('api/device/updateDevice',data)
+              if (response.status === 200) {
+                console.log("update success")
+              }
+            } catch (err) {
+              console.log('Failed to update the equipment info: ', err)
+            }
           },
           onChange: setEditableRowKeys,
         }}
-        maxLength={100}
-        recordCreatorProps={
-          position !== 'hidden'
-            ? {
-                position: position as 'top',
-                record: () => ({ id: dataSource.length+1 }),
-              }
-            : false
-        }
+        recordCreatorProps={false}
+        // maxLength={1}
+        // recordCreatorProps={
+        //   position !== 'hidden'
+        //     ? {
+        //         position: position as 'top',
+        //         record: () => ({ id: dataSource.length+1 }),
+        //       }
+        //     : false
+        // }
       />
     </>
   );

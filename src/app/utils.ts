@@ -34,17 +34,19 @@ export function useFetchSomeDayData(date: string) {
     const fetchData = async (date: string) => {
       try {
         setRequestStatus('loading')
-        const response: any = await axios.post('api/history/search',
-        {deviceId: 0, time: date})
+        const response: any = await axios.post('api/sum/search',
+        {time: date})
         setRequestStatus('succeed')
-        const records = response.data.data.collectors[0].records
-        const somedayRealtimeData = records?.map((record: any) => {
+        // const records = response.data.data.collectors[0].records
+        const data = response.data.data
+        const somedayRealtimeData = data?.map((record: any) => {
           return {
             time: handleTimeChange(record.time),
             somedayQuantity: record.quantity,
           }
         })
-        const somedayTotalAmount = records[records.length - 1]?.currentAmount
+        // const somedayTotalAmount = records[records.length - 1]?.currentAmount
+        const somedayTotalAmount = data[data.length - 1]?.currentAmount
         setRealData(somedayRealtimeData)
         setSomedayTotal(somedayTotalAmount)
       } catch (err) {
@@ -69,17 +71,20 @@ export function useRealtimeFetch(interval: number) {
 
   const fetchData = async () => {
     try {
-      const response: any = await axios.post('api/history/search',
-      {deviceId: 0})
-      const records = response.data.data.collectors[0].records
-      const todayRealtimeData = records?.map((record: any) => {
+      const response: any = await axios.post('api/sum/search',
+      {time: moment().format('YYYY-MM-DDTHH:mm:ss[Z]')})
+      // const records = response.data.data.collectors[0].records
+      const data = response.data.data
+      const todayRealtimeData = data?.map((record: any) => {
         return {
           time: handleTimeChange(record.time),
           todayQuantity: record.quantity,
         }
       })
-      const todayTotalAmount = records[records.length - 1]?.currentAmount
-      const todayCurrentTime = records[records.length - 1]?.time
+      // const todayTotalAmount = records[records.length - 1]?.currentAmount
+      // const todayCurrentTime = records[records.length - 1]?.time
+      const todayTotalAmount = data[data.length - 1]?.currentAmount
+      const todayCurrentTime = data[data.length - 1]?.time
       setTodayData(todayRealtimeData)
       setTodayCurrent(todayTotalAmount)
       setCurrentTime(todayCurrentTime)

@@ -64,7 +64,7 @@ const realtimeSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(fetchEquipments.fulfilled, (state, action) => {
-        state.status = 'succeed'
+        state.status = 'succeed';
         realtimeAdapter.setAll(state, action.payload)
       })
       .addCase(fetchEquipments.rejected, (state, action) => {

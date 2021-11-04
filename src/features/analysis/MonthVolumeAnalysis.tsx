@@ -17,7 +17,7 @@ import moment from 'moment'
 export default function MonthVolumeAnalysis() {
   const [month, setMonth] = useState(new Date().getTime())
 
-  const [yearPowerConsumption, setYearPowerConsumption] = useState<any[]>([])
+  const [monthPowerConsumption, setMonthPowerConsumption] = useState<any[]>([])
   const [yearToyear, setYearToyear] = useState<any[]>([])
   const [monthTomonth, setMonthTomonth] = useState<any[]>([])
 
@@ -27,28 +27,17 @@ export default function MonthVolumeAnalysis() {
         const response: any = await axios.post("api/analysis/search", 
           {time: month, type: 'month'}
         )
-        const powerConsumption = response.data.map((month: any, index: number) => {
-          return {
-            name: `${index+1}号`,
-            电量: month.powerConsumption
-          }
+        let powerConsumption: any[] = []
+        let yearOnYear: any[] = []
+        let monthOnMonth: any[] = []
+        response.data.forEach((month: any, index: number) => {
+          powerConsumption.push({name: `${index+1}号`, 电量: month.powerConsumption})
+          yearOnYear.push({name: `${index+1}号`, 电量: month.powerConsumptionYoy})
+          monthOnMonth.push({name: `${index+1}号`, 电量: month.powerConsumptionMom})
         })
-        const yearTyear = response.data.map((month: any, index: number) => {
-          return {
-            name: `${index+1}号`,
-            电量: month.powerConsumptionYoy
-          }
-        })
-        const monthTmonth = response.data.map((month: any, index: number) => {
-          return {
-            name: `${index+1}号`,
-            电量: month.powerConsumptionMom
-          }
-        })
-        console.log('data', powerConsumption)
-        setYearPowerConsumption(powerConsumption)
-        setYearToyear(yearTyear)
-        setMonthTomonth(monthTmonth)
+        setMonthPowerConsumption(powerConsumption)
+        setYearToyear(yearOnYear)
+        setMonthTomonth(monthOnMonth)
       } catch (err) {
         console.log('Failed to get year analysis data: ', err)
       }
@@ -74,7 +63,7 @@ export default function MonthVolumeAnalysis() {
           </div>
         <ResponsiveContainer width="100%" height={350}>
         <ComposedChart
-          data={yearPowerConsumption}
+          data={monthPowerConsumption}
           margin={{
             top: 20,
             right: 20,

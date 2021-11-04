@@ -17,17 +17,17 @@ const GMSEquipmentBoard = () => {
           <ElectricCostChart />
         </div>
       </Col>
-      <Col lg={8} xs={24}>
+      <Col lg={9} xl={8} xs={24}>
         <div className="bg-white h-100">
           <EquipmentOnlineChart />
         </div>
       </Col>
-      <Col lg={8} xs={24}>
+      <Col lg={6} xl={8} xs={24}>
         <div className="bg-white pl3 pr3 h-100">
           <DataEquipmentInfo />
         </div>
       </Col>
-      <Col lg={8}>
+      <Col lg={9} xl={8}>
         <Row >
           <Col span={24} className="bg-white mt2 mb2">
             <CurrentMonthElectricCost />

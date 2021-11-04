@@ -21,7 +21,7 @@ export default function EquipmentConsumptionChart({ status, data }: any) {
         margin={{
           top: 5,
           right: 5,
-          left: 20,
+          left: 0,
           bottom: 5
         }}
       >

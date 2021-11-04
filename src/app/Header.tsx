@@ -48,9 +48,12 @@ const UserTable = () => {
   )
 
   return (
-    <div style={{ display: "flex", alignItems: "baseline" }} className="usertab">
+    <div 
+    style={{ display: "flex", alignItems: "baseline", justifyContent: "end", marginRight:'10px'}} 
+    className="usertab"
+    >
       <Avatar size={30} icon={<UserOutlined />} />
-      <Popover placement="bottom" title={`登录用户: ${username || "admin"}`} content={userContent} trigger="click" style={{ marginLeft: 50 }}>
+      <Popover placement="bottom" title={`登录用户: ${username || "admin"}`} content={userContent} trigger="click" >
         <h4 style={{ marginLeft: 10, cursor: "pointer" }}>{username || "admin"}   </h4>
       </Popover>
     </div>
@@ -119,15 +122,15 @@ const Header= () => {
           消息中心 
         </p>
       </Col>
-      <Col md={{offset: 2, span: 2, order: 0}} xs={{order:2, }}>
+      <Col md={{offset: 2, span: 3, order: 0}} xs={{order:2, }}>
         <UserTable />
       </Col>
-      <Col md={{span:2, order: 0}} xs={{order: 1}}>
-      <img 
-        src={logo} 
-        alt="ESGlogo" 
-        style={{width: '130px', height: '40px', borderRadius: "10px"}}
-      />
+      <Col md={{span:3, order: 0}} xs={{order: 1}}>
+        <img 
+          src={logo} 
+          alt="ESGlogo" 
+          style={{width: '130px', height: '40px', borderRadius: "10px"}}
+        />
       </Col>
     </Row>
   )

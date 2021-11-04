@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, Legend } from "recharts"
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts"
 import { useAppSelector } from "../../../hook"
 import { selectEquipments } from "../../gmsBoard/realtimeSlice"
 
@@ -47,24 +47,26 @@ const EquipmentOnlineChart = () => {
   return (
     <>
       <h1 className="f4 blue pl3 pt3 mt2">设备在线</h1>
-      <PieChart width={400} height={350}>
-        <Legend verticalAlign="bottom" height={36} />
-        <Pie
-          data={data}
-          cx={165}
-          cy={150}
-          labelLine={false}
-          label={renderCustomizedLabel}
-          outerRadius={120}
-          fill="#8884d8"
-          legendType="diamond"
-          dataKey="value"
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-      </PieChart>
+      <ResponsiveContainer width="100%" height={350}>
+        <PieChart >
+          <Legend verticalAlign="bottom" height={36} />
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={120}
+            fill="#8884d8"
+            legendType="diamond"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
     </>
   )
 }
