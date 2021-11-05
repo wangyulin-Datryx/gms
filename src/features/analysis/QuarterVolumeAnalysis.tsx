@@ -13,25 +13,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import moment from 'moment'
 
-const data = [
-  {
-    name: '1季度',
-    电量: 590,
-  },
-  {
-    name: '2季度',
-    电量: 868,
-  },
-  {
-    name: '3季度',
-    电量: 1397,
-  },
-  {
-    name: '4季度',
-    电量: 1480,
-  }
-];
-
 const currentYear = moment().year()
 
 export default function QuarterVolumeAanlysis() {
@@ -62,6 +43,18 @@ export default function QuarterVolumeAanlysis() {
     }
     fetchData()
   }, [])
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="bg-white">{`${label} ${payload[0].value}%`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  }
   
   return (
     <>
@@ -106,8 +99,8 @@ export default function QuarterVolumeAanlysis() {
             >
             <CartesianGrid stroke="#f5f5f5" />
             <XAxis dataKey="name" scale="band" />
-            <YAxis />
-            <Tooltip />
+            <YAxis unit="%"/>
+            <Tooltip content={<CustomTooltip />}/>
             <Legend />
             <Bar dataKey="电量" barSize={20} fill="#413ea0" />
             </ComposedChart> 
@@ -129,8 +122,8 @@ export default function QuarterVolumeAanlysis() {
             >
             <CartesianGrid stroke="#f5f5f5" />
             <XAxis dataKey="name" scale="band" />
-            <YAxis />
-            <Tooltip />
+            <YAxis unit="%"/>
+            <Tooltip content={<CustomTooltip />}/>
             <Legend />
             <Bar dataKey="电量" barSize={20} fill="#413ea0" />
             </ComposedChart>

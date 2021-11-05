@@ -48,6 +48,18 @@ export default function MonthWarningStatic() {
     setMonth(new Date(`${dateString}`).getTime())
   }
 
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="bg-white">{`${label} ${payload[0].value}%`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  }
+
   return (
     <Row gutter={[16, 24]} className='pa3'>
       <Col  span={24}>
@@ -95,8 +107,8 @@ export default function MonthWarningStatic() {
           >
           <CartesianGrid stroke="#f5f5f5" />
           <XAxis dataKey="name" scale="band" />
-          <YAxis />
-          <Tooltip />
+          <YAxis unit="%"/>
+          <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="预警" barSize={20} fill="#413ea0" />
           </ComposedChart> 
@@ -119,7 +131,7 @@ export default function MonthWarningStatic() {
           <CartesianGrid stroke="#f5f5f5" />
           <XAxis dataKey="name" scale="band" />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="预警" barSize={20} fill="#413ea0" />
           </ComposedChart> 
