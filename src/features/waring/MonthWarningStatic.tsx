@@ -94,7 +94,7 @@ export default function MonthWarningStatic() {
       </Col>
       <Col xs={24} lg={12}>
         <div>
-          <h1 className="blue f3 ml4">上月同比率</h1>
+          <h1 className="blue f3 ml4">同比率</h1>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
             data={yearToyear}
@@ -117,7 +117,7 @@ export default function MonthWarningStatic() {
       </Col>
       <Col xs={24} lg={12}>
         <div>
-          <h1 className="blue f3 ml4">上月环比率</h1>
+          <h1 className="blue f3 ml4">环比率</h1>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
             data={monthTomonth}
@@ -130,7 +130,7 @@ export default function MonthWarningStatic() {
           >
           <CartesianGrid stroke="#f5f5f5" />
           <XAxis dataKey="name" scale="band" />
-          <YAxis />
+          <YAxis unit="%"/>
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="预警" barSize={20} fill="#413ea0" />

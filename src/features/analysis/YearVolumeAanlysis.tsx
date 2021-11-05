@@ -98,7 +98,7 @@ export default function YearVolumeAanlysis() {
         </Col>
         <Col xs={24} lg={12}>
           <div>
-            <h1 className="blue f3 ml4">上年同比率</h1>
+            <h1 className="blue f3 ml4">同比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
               data={yearToyear}
@@ -121,7 +121,7 @@ export default function YearVolumeAanlysis() {
         </Col>
         <Col xs={24} lg={12}>
           <div>
-            <h1 className="blue f3 ml4">上年环比率</h1>
+            <h1 className="blue f3 ml4">环比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
               data={monthTomonth}

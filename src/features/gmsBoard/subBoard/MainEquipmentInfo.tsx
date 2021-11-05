@@ -50,7 +50,7 @@ export default function MainEquipmentInfo() {
               const id = item.id
               return (
                 <List.Item>
-                  <div>{item.name}</div>
+                  <div>{item.name}&emsp;</div>
                   <div>{item.currentAmount?.toFixed(2)}kWh</div>
                 </List.Item>
               )}
