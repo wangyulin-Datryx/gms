@@ -9,64 +9,42 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { Row, Col, DatePicker } from 'antd'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import moment from 'moment'
-
-const data = [
-  {
-    name: '1月',
-    预警: 590,
-  },
-  {
-    name: '2月',
-    预警: 868,
-  },
-  {
-    name: '3月',
-    预警: 1397,
-  },
-  {
-    name: '4月',
-    预警: 1480,
-  },
-  {
-    name: '5月',
-    预警: 1520,
-  },
-  {
-    name: '6月',
-    预警: 1400,
-  },
-  {
-    name: '7月',
-    预警: 1200,
-  },
-  {
-    name: '8月',
-    预警: 1400,
-  },
-  {
-    name: '9月',
-    预警: 1800,
-  },
-  {
-    name: '10月',
-    预警: 1400,
-  },
-  {
-    name: '11月',
-    预警: 1400,
-  },
-  {
-    name: '12月',
-    预警: 1600,
-  },
-];
 
 const currentYear = moment().year()
 
 export default function YearWarningStatic() {
   const [year, setYear] = useState(currentYear)
+  const [warningConsumption, setYearWaringConsumption] = useState<any[]>([])
+  const [yearToyear, setYearToyear] = useState<any[]>([])
+  const [monthTomonth, setMonthTomonth] = useState<any[]>([])
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: any = await axios.post("api/analysisWarnings/search", 
+          {time: new Date(`${year}`).getTime(), type: 'year'}
+        )
+        let warningConsumption: any[] = []
+        let yearOnYear: any[] = []
+        let monthOnMonth: any[] = []
+        response.data.forEach((month: any, index: number) => {
+          warningConsumption.push({name: `${index+1}月`, 预警: month.warningsConsumption})
+          yearOnYear.push({name: `${index+1}月`, 预警: month.warningsConsumptionYoy})
+          monthOnMonth.push({name: `${index+1}月`, 预警: month.warningsConsumptionMom})
+        })
+        setYearWaringConsumption(warningConsumption)
+        setYearToyear(yearOnYear)
+        setMonthTomonth(monthOnMonth)
+      } catch (err) {
+        console.log('Failed to get year analysis data: ', err)
+      }
+    }
+    fetchData()
+  }, [year])
 
   function onChange(date: any, dateString: any) {
     setYear(dateString)
@@ -87,7 +65,7 @@ export default function YearWarningStatic() {
           </div>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
-            data={data}
+            data={warningConsumption}
             margin={{
               top: 20,
               right: 20,
@@ -110,7 +88,7 @@ export default function YearWarningStatic() {
             <h1 className="blue f3 ml4">上年同比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={yearToyear}
               margin={{
                 top: 20,
                 right: 20,
@@ -133,7 +111,7 @@ export default function YearWarningStatic() {
             <h1 className="blue f3 ml4">上年环比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={monthTomonth}
               margin={{
                 top: 20,
                 right: 20,

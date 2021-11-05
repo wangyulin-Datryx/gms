@@ -9,6 +9,9 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { Row, Col } from 'antd'
+import moment from 'moment'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 const data = [
   {
@@ -29,8 +32,36 @@ const data = [
   }
 ];
 
+const currentYear = moment().year()
 
 export default function QuarterWarningStatic() {
+  const [warningConsumption, setYearWarningConsumption] = useState<any[]>([])
+  const [yearOnYear, setYearOnYear] = useState<any[]>([])
+  const [seasonOnSeason, setSeasonOnSeason] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: any = await axios.post("api/analysisWarnings/search", 
+          {time: new Date(`${currentYear}`).getTime(), type: 'season'}
+        )
+        let warningConsumption: any[] = []
+        let yearOnYear: any[] = []
+        let seasonOnSeason: any[] = []
+        response.data.forEach((season: any, index: number) => {
+          warningConsumption.push({name: `${index+1}季度`, 预警: season.warningsConsumption})
+          yearOnYear.push({name: `${index+1}季度`, 预警: season.warningsConsumptionYoy})
+          seasonOnSeason.push({name: `${index+1}季度`, 预警: season.warningsConsumptionMom})
+        })
+        setYearWarningConsumption(warningConsumption)
+        setYearOnYear(yearOnYear)
+        setSeasonOnSeason(seasonOnSeason)
+      } catch (err) {
+        console.log('Failed to get year analysis data: ', err)
+      }
+    }
+    fetchData()
+  }, [])
   
   return (
     <>
@@ -42,7 +73,7 @@ export default function QuarterWarningStatic() {
           </div>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
-            data={data}
+            data={warningConsumption}
             margin={{
               top: 20,
               right: 20,
@@ -65,7 +96,7 @@ export default function QuarterWarningStatic() {
             <h1 className="blue f3 ml4">同比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={yearOnYear}
               margin={{
                 top: 20,
                 right: 20,
@@ -88,7 +119,7 @@ export default function QuarterWarningStatic() {
             <h1 className="blue f3 ml4">环比率</h1>
             <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
-              data={data}
+              data={seasonOnSeason}
               margin={{
                 top: 20,
                 right: 20,

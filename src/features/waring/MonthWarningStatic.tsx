@@ -9,67 +9,43 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Row, Col, DatePicker } from 'antd'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import moment from 'moment'
-
-const data = [
-  {
-    name: '1号',
-    预警: 590,
-  },
-  {
-    name: '2号',
-    预警: 868,
-  },
-  {
-    name: '3号',
-    预警: 1397,
-  },
-  {
-    name: '4号',
-    预警: 1480,
-  },
-  {
-    name: '5号',
-    预警: 1520,
-  },
-  {
-    name: '6号',
-    预警: 1400,
-  },
-  {
-    name: '7号',
-    预警: 1200,
-  },
-  {
-    name: '8号',
-    预警: 1400,
-  },
-  {
-    name: '9号',
-    预警: 1800,
-  },
-  {
-    name: '10号',
-    预警: 1400,
-  },
-  {
-    name: '11号',
-    预警: 1400,
-  },
-  {
-    name: '12号',
-    预警: 1600,
-  },
-];
-
-const curretnMonth = moment().month() + 1
+import axios from 'axios'
 
 export default function MonthWarningStatic() {
-  const [month, setMonth] = useState(curretnMonth)
+  const [month, setMonth] = useState(new Date().getTime())
+
+  const [monthWarningConsumption, setMonthWarningConsumption] = useState<any[]>([])
+  const [yearToyear, setYearToyear] = useState<any[]>([])
+  const [monthTomonth, setMonthTomonth] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: any = await axios.post("api/analysisWarnings/search", 
+          {time: month, type: 'month'}
+        )
+        let warningConsumption: any[] = []
+        let yearOnYear: any[] = []
+        let monthOnMonth: any[] = []
+        response.data.forEach((month: any, index: number) => {
+          warningConsumption.push({name: `${index+1}号`, 预警: month.warningsConsumption})
+          yearOnYear.push({name: `${index+1}号`, 预警: month.warningsConsumptionYoy})
+          monthOnMonth.push({name: `${index+1}号`, 预警: month.warningsConsumptionMom})
+        })
+        setMonthWarningConsumption(warningConsumption)
+        setYearToyear(yearOnYear)
+        setMonthTomonth(monthOnMonth)
+      } catch (err) {
+        console.log('Failed to get year analysis data: ', err)
+      }
+    }
+    fetchData()
+  }, [month])
 
   function onChange(date: any, dateString: any) {
-    setMonth(moment(dateString).month() + 1)
+    setMonth(new Date(`${dateString}`).getTime())
   }
 
   return (
@@ -77,7 +53,7 @@ export default function MonthWarningStatic() {
       <Col  span={24}>
         <div>
         <div className='flex justify-between'>
-            <h1 className="blue f3 ml4">{`月预警信息（${month}）`}</h1>
+            <h1 className="blue f3 ml4">{`月预警信息（${new Date(month).getMonth()+1}）`}</h1>
             <DatePicker 
               picker="month" 
               onChange={onChange}
@@ -86,7 +62,7 @@ export default function MonthWarningStatic() {
           </div>
         <ResponsiveContainer width="100%" height={350}>
         <ComposedChart
-          data={data}
+          data={monthWarningConsumption}
           margin={{
             top: 20,
             right: 20,
@@ -109,7 +85,7 @@ export default function MonthWarningStatic() {
           <h1 className="blue f3 ml4">上月同比率</h1>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
-            data={data}
+            data={yearToyear}
             margin={{
               top: 20,
               right: 20,
@@ -132,7 +108,7 @@ export default function MonthWarningStatic() {
           <h1 className="blue f3 ml4">上月环比率</h1>
           <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
-            data={data}
+            data={monthTomonth}
             margin={{
               top: 20,
               right: 20,
