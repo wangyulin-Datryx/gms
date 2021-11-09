@@ -11,6 +11,8 @@ import AmmeterManagement from '../ammeter/AmmeterManagement'
 import AddAmmeter from '../ammeter/AddAmmeter'
 import EquipmentManagement from '../equipments/EquipmentManagement'
 import AddEquipment from '../equipments/AddEquipment'
+import EquipGroupManagement from '../equipmentsGroup/EquipGroupManagement'
+import ProductLineManagement from '../productLine/ProductLineManagement'
 import { Layout } from 'antd'
 import { 
   Switch, 
@@ -70,8 +72,14 @@ const MainPage = () => {
               <Route exact path="/equipment-management">
                 <EquipmentManagement />
               </Route>
+              <Route exact path="/equipments-group-management">
+                <EquipGroupManagement />
+              </Route>
               <Route exact path="/add-equipment">
                 <AddEquipment />
+              </Route>
+              <Route exact path="/product-line-management">
+                <ProductLineManagement />
               </Route>
             </Switch>
           </Content>

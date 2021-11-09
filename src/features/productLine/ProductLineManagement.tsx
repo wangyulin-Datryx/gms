@@ -6,46 +6,22 @@ import ProCard from '@ant-design/pro-card';
 import axios from 'axios'
 import { Button, Modal, Input, Form } from 'antd'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
-import AddEquipment from './AddEquipment'
-import EditEquipment from './EditEquipment'
+import AddProductLine from './AddProductLine';
+import EditProductLine from './EditProductLine';
 
 
 type DataSourceType = {
   id: React.Key;
   indexId?: number;
-  deviceNo?: string;
+  lineNo?: string;
   name?: string;
-  info?: string;
-  status?: number;
-  kwh?: string;
-  minKwh?: string;
-  maxKwh?: string;
-  ratedCurrent?: number;
-  minRatedCurrent?: number;
-  maxRatedCurrent?: number;
-  capacity?: string;
-  minCapacity?: string;
-  maxCapacity?: string;
+  groupNums?: string;
+  equipNums?: number;
   comments?: string;
-  energyConsumption?:string;
-  minEnergyConsumption?: string;
-  maxEnergyConsumption?: string;
-  standardWorkHour?: number;
-  minStandardWorkHour?: number;
-  maxStandardWorkHour?: number;
-  createDt?:string;
-  beginDate?: string;
-  endDate?: string;
-  createBy?: string;
-  updateDt?: string;
-  updateBy?: string;
-  maxCurrent?: number;
-  minCurrent?: number;
-  maxVoltage?: number;
-  minVoltage?: number;
+  createTime?:string;
 }
 
-export default function EquipmentManagement() {
+export default function ProductLineManagement() {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
@@ -92,7 +68,7 @@ export default function EquipmentManagement() {
       hideInSearch: true,
     },
     {
-      title: '设备名称',
+      title: '产线名称',
       dataIndex: 'name',
       formItemProps: (form, { rowIndex }) => {
         return {
@@ -103,52 +79,23 @@ export default function EquipmentManagement() {
       responsive: ['md']
     },
     {
-      title: '设备',
+      title: '产线',
       dataIndex: 'name',
       hideInTable: true,
     },
     {
-      title: '设备编号',
-      dataIndex: 'deviceNo',
-      hideInSearch: true,
-    },
-    {
-      title: '设备状态',
-      dataIndex: 'status',
-      hideInSearch: true,
-      render: (text: any) => text === 1? "在线":"离线" ,
-    },
-    {
-      title: '设备状态',
-      dataIndex: 'status',
+      title: '设备/群组',
+      dataIndex: 'equip/group',
       hideInTable: true,
-      valueType: 'select',
-      valueEnum: {
-        all: {text: '全部', status: 'Default'},
-        1: {
-          text: '在线',
-          status: 1
-        },
-        0: {
-          text: '离线',
-          status: 0
-        }
-      }
-    },
+    }, 
     {
-      title: '功率',
-      dataIndex: 'kwh',
-      sorter: true,
-      hideInSearch: true,
-    },
-    {
-      title: '功率',
-      dataIndex: 'kwh',
+      title: '设备群组数量',
+      dataIndex: 'groupNums',
       hideInTable: true,
       renderFormItem: (schema,config,form) => {
         return(
           <Input.Group compact>
-            <Form.Item name="minKwh">
+            <Form.Item name="groupNumsMin">
               <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
             </Form.Item>
               <Input
@@ -162,7 +109,42 @@ export default function EquipmentManagement() {
                 placeholder="~"
                 disabled
               />
-              <Form.Item name="maxKwh">
+              <Form.Item name="groupNumsMax">
+                <Input
+                  className="site-input-right"
+                  style={{
+                    width: 120,
+                    textAlign: 'center',
+                  }}
+                  placeholder="最大值"
+                />
+              </Form.Item>
+            </Input.Group>
+        )
+      }
+    }, 
+    {
+      title: '设备数量',
+      dataIndex: 'equipNums',
+      hideInTable: true,
+      renderFormItem: (schema,config,form) => {
+        return(
+          <Input.Group compact>
+            <Form.Item name="equipNumsMin">
+              <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
+            </Form.Item>
+              <Input
+                className="site-input-split"
+                style={{
+                  width: 30,
+                  borderLeft: 0,
+                  borderRight: 0,
+                  pointerEvents: 'none',
+                }}
+                placeholder="~"
+                disabled
+              />
+              <Form.Item name="equipNumsMax">
                 <Input
                   className="site-input-right"
                   style={{
@@ -177,184 +159,21 @@ export default function EquipmentManagement() {
       }
     },
     {
-      title: '额定电流(A)',
-      dataIndex: 'ratedCurrent',
+      title: '产线编号',
+      dataIndex: 'lineNo',
+      key: 'lineNo',
       hideInSearch: true,
-      sorter: true,
     },
     {
-      title: '额定电流(A)',
-      dataIndex: 'ratedCurrent',
-      hideInTable: true,
-      renderFormItem: (schema,config,form) => {
-        return(
-          <Input.Group compact>
-            <Form.Item name="minRatedCurrent">
-              <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
-            </Form.Item>
-              <Input
-                className="site-input-split"
-                style={{
-                  width: 30,
-                  borderLeft: 0,
-                  borderRight: 0,
-                  pointerEvents: 'none',
-                }}
-                placeholder="~"
-                disabled
-              />
-              <Form.Item name="maxRatedCurrent">
-                <Input
-                  className="site-input-right"
-                  style={{
-                    width: 120,
-                    textAlign: 'center',
-                  }}
-                  placeholder="最大值"
-                />
-              </Form.Item>
-            </Input.Group>
-        )
-      }
-    },
-    {
-      title: '能耗(kw/h)',
-      dataIndex: 'energyConsumption',
-      sorter: true,
+      title: '设备群组数量',
+      dataIndex: 'groupNums',
       hideInSearch: true,
-      responsive: ['md']
-    },
+    }, 
     {
-      title: '能耗(kw/h)',
-      dataIndex: 'energyConsumption',
-      hideInTable: true,
-      renderFormItem: (schema,config,form) => {
-        return(
-          <Input.Group compact>
-            <Form.Item name="minEnergyConsumption">
-              <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
-            </Form.Item>
-              <Input
-                className="site-input-split"
-                style={{
-                  width: 30,
-                  borderLeft: 0,
-                  borderRight: 0,
-                  pointerEvents: 'none',
-                }}
-                placeholder="~"
-                disabled
-              />
-              <Form.Item name="maxEnergyConsumption">
-                <Input
-                  className="site-input-right"
-                  style={{
-                    width: 120,
-                    textAlign: 'center',
-                  }}
-                  placeholder="最大值"
-                />
-              </Form.Item>
-            </Input.Group>
-        )
-      }
-    },
-    {
-      title: '标准工时(h)',
-      dataIndex: 'standardWorkHour',
-      sorter: true,
+      title: '设备数量',
+      dataIndex: 'equipNums',
       hideInSearch: true,
-      responsive: ['md']
-    },
-    {
-      title: '标准工时(h)',
-      dataIndex: 'standardWorkHour',
-      hideInTable: true,
-      renderFormItem: (schema,config,form) => {
-        return(
-          <Input.Group compact>
-            <Form.Item name="minStandardWorkHour">
-              <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
-            </Form.Item>
-              <Input
-                className="site-input-split"
-                style={{
-                  width: 30,
-                  borderLeft: 0,
-                  borderRight: 0,
-                  pointerEvents: 'none',
-                }}
-                placeholder="~"
-                disabled
-              />
-              <Form.Item name="maxStandardWorkHour">
-                <Input
-                  className="site-input-right"
-                  style={{
-                    width: 120,
-                    textAlign: 'center',
-                  }}
-                  placeholder="最大值"
-                />
-              </Form.Item>
-            </Input.Group>
-        )
-      }
-    },
-    {
-      title: '产能',
-      dataIndex: 'capacity',
-      hideInSearch: true,
-      responsive: ['md']
-    },
-    {
-      title: '产能',
-      dataIndex: 'capacity',
-      hideInTable: true,
-      renderFormItem: (schema,config,form) => {
-        return(
-          <Input.Group compact>
-            <Form.Item name="minCapacity">
-              <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
-            </Form.Item>
-              <Input
-                className="site-input-split"
-                style={{
-                  width: 30,
-                  borderLeft: 0,
-                  borderRight: 0,
-                  pointerEvents: 'none',
-                }}
-                placeholder="~"
-                disabled
-              />
-              <Form.Item name="maxCapacity">
-                <Input
-                  className="site-input-right"
-                  style={{
-                    width: 120,
-                    textAlign: 'center',
-                  }}
-                  placeholder="最大值"
-                />
-              </Form.Item>
-            </Input.Group>
-        )
-      }
-    },
-    {
-      title: '电流正常范围(A)',
-      dataIndex: 'currentRange',
-      hideInSearch: true,
-      responsive: ['md']
-    },
-    {
-      title: '电压正常范围(V)',
-      dataIndex: 'voltageRange',
-      hideInSearch: true,
-      responsive: ['md']
-    },
-    
+    }, 
     {
       title: '备注',
       dataIndex: 'comments',
@@ -363,24 +182,26 @@ export default function EquipmentManagement() {
     },
     {
       title: '创建时间',
-      dataIndex: 'createDt',
+      dataIndex: 'createTime',
       valueType: 'dateTime',
       sorter: true,
       hideInSearch: true,
+      responsive: ['md']
     },
     {
       title: '创建时间',
-      dataIndex: 'createDt',
+      dataIndex: 'createTime',
       valueType: 'dateRange',
       hideInTable: true,
       search: {
       transform: (value) => {
         return {
-          beginDate: value[0],
-          endDate: value[1],
+          startTime: value[0],
+          endTime: value[1],
         };
       },
     },
+      responsive: ['md']
     },
     {
       title: '操作',
@@ -451,13 +272,11 @@ export default function EquipmentManagement() {
           const data = response.data.data.map((data:any, index: number) => {
             return {
               ...data,
-              indexId: index + 1,
-              currentRange: `${data.minCurrent}~${data.maxCurrent}`,
-              voltageRange: `${data.minVoltage}~${data.maxVoltage}`,
+              indexId: index + 1
             }
           })
-          console.log('search', sorter)
-          // console.log('searchData', response.data.data)
+          console.log('search', params)
+          console.log('searchData', response.data.data)
           return {data, success: true}
         }}
         search={{
@@ -505,7 +324,7 @@ export default function EquipmentManagement() {
         onCancel={handleCancel}
         footer={false}
       >
-        <AddEquipment setVisible={setAddVisible}/>
+        <AddProductLine setVisible={setAddVisible}/>
       </Modal>
       <Modal
         visible={editVisible}
@@ -514,9 +333,10 @@ export default function EquipmentManagement() {
         onCancel={handleEditCancel}
         footer={false}
       >
-        <EditEquipment setVisible={setEditVisible} record={record}/>
+        <EditProductLine setVisible={setEditVisible} record={record}/>
       </Modal>
     </div>
   )
 }
+
 

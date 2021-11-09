@@ -45,6 +45,12 @@ export default function Menus() {
       <Menu.Item key="equipment-management" icon={<DesktopOutlined />}>
         <Link to="/equipment-management">设备管理</Link>
       </Menu.Item>
+      <Menu.Item key="equipments-group-management" icon={<DesktopOutlined />}>
+        <Link to="/equipments-group-management">设备群组管理</Link>
+      </Menu.Item>
+      <Menu.Item key="product-line-management" icon={<DesktopOutlined />}>
+        <Link to="/product-line-management">产线管理</Link>
+      </Menu.Item>
       {/* <Menu.Item key="4" icon={<BarChartOutlined />}>
         nav 4
       </Menu.Item>

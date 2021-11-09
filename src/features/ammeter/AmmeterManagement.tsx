@@ -8,14 +8,17 @@ import moment from 'moment'
 
 type DataSourceType = {
   id: React.Key;
+  indexId?: number; 
   collectorId?: number;
   collectorSn?: string;
-  deviceId?: number;
-  deviceName?: string;
-  info?: string;
+  GPRSID?: number;
+  objectType?: string;
+  objectName?: string;
+  objectNo?: string;
   status?: number;
-  name?: string;
+  comments?: string;
   transformerCoefficient?: string;
+  createTime: string;
 }
 
 export default function AmmeterManagement (){
@@ -24,6 +27,11 @@ export default function AmmeterManagement (){
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
 
   const columns: ProColumns<DataSourceType>[] = [
+    {
+      title: '序号',
+      dataIndex: 'indexId',
+      hideInSearch: true,
+    },
     {
       title: '电表编号',
       dataIndex: 'id',
@@ -63,12 +71,6 @@ export default function AmmeterManagement (){
       dataIndex: 'deviceName',
       editable: false
     },
-    // {
-    //   title: '备注',
-    //   dataIndex: 'comments',
-    //   hideInSearch: true,
-    //   responsive: ['xl']
-    // },
     {
       title: '操作',
       valueType: 'option',
@@ -146,15 +148,6 @@ export default function AmmeterManagement (){
           onChange: setEditableRowKeys,
         }}
         recordCreatorProps={false}
-        // maxLength={100}
-        // recordCreatorProps={
-        //   position !== 'hidden'
-        //     ? {
-        //         position: position as 'top',
-        //         record: () => ({ indexId: dataSource.length+1 }),
-        //       }
-        //     : false
-        // }
       />
     </div>
   );

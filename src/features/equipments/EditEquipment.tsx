@@ -2,21 +2,23 @@ import { Form, Row, Col, Button, Input, Divider } from 'antd'
 import axios from 'axios'
 const { TextArea } = Input
 
-export default function AddEquipment({ setVisible }: any) {
+export default function EditEquipment({ setVisible, record }: any) {
   const [form] = Form.useForm()
 
-  const handleNameInput = 
-
   const onFinish = async (values: any) => {
-    console.log('add values', values)
+    const updateParams = {
+      ...values,
+      id: record.id
+    }
+    console.log("update params", updateParams)
     try {
-      const response: any = await axios.post('api/device/addDevice',values)
+      const response: any = await axios.post('api/device/updateDevice', updateParams)
       if (response.status == 200) {
         setVisible(false);
       }
     } catch(err) {
-      console.log("Failed to add equipment: ", err)
-    }
+      console.log("Failed to update: ", err)
+    } 
   }
 
   return (
@@ -24,6 +26,7 @@ export default function AddEquipment({ setVisible }: any) {
       form={form}
       name="advanced_search"
       className="ant-advanced-search-form"
+      initialValues={record}
       onFinish={onFinish}
     >
       <Row gutter={24}>
@@ -38,7 +41,7 @@ export default function AddEquipment({ setVisible }: any) {
               },
             ]}
           >
-            <Input placeholder="请输入设备名称" onChange={handleNameInput} />
+            <Input placeholder="请输入设备名称" />
           </Form.Item>
         </Col>
         <Col span={12} key='2'>
@@ -86,11 +89,9 @@ export default function AddEquipment({ setVisible }: any) {
             label='电流正常范围(A)'
           >
             <Input.Group compact>
-              <Form.Item
-                name='minCurrent'
-              >
-                <Input style={{ width: 100, textAlign: 'center' }} placeholder="最小值" />
-              </Form.Item>
+            <Form.Item name="minCurrent">
+              <Input style={{ width: 100, textAlign: 'center' }} placeholder="最小值" />
+            </Form.Item>  
               <Input
                 className="site-input-split"
                 style={{
@@ -102,16 +103,16 @@ export default function AddEquipment({ setVisible }: any) {
                 placeholder="~"
                 disabled
               />
-              <Form.Item name="maxCurrent">
-                <Input
-                  className="site-input-right"
-                  style={{
-                    width: 100,
-                    textAlign: 'center',
-                  }}
-                  placeholder="最大值"
-                />
-              </Form.Item>
+            <Form.Item name="maxCurrent">
+              <Input
+                className="site-input-right"
+                style={{
+                  width: 100,
+                  textAlign: 'center',
+                }}
+                placeholder="最大值"
+              />
+            </Form.Item>
             </Input.Group>
           </Form.Item>
         </Col>
@@ -159,7 +160,7 @@ export default function AddEquipment({ setVisible }: any) {
         <Col span={24} >
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              新增
+              保存
             </Button>
             <Button htmlType="button" onClick={() => setVisible(false)}>
               取消
