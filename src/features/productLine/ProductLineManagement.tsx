@@ -10,20 +10,27 @@ import AddProductLine from './AddProductLine';
 import EditProductLine from './EditProductLine';
 
 
-type DataSourceType = {
+type LineDataType = {
   id: React.Key;
   indexId?: number;
   lineNo?: string;
-  name?: string;
-  groupNums?: string;
-  equipNums?: number;
+  lineName?: string;
+  groupAmount?: number;
+  minGroupAmount: number;
+  maxGroupAmount: number;
+  deviceAmount?: number;
+  minDeviceAmount?: number;
+  maxDeviceAmount?: number;
   comments?: string;
   createTime?:string;
+  beginDate?: string;
+  endDate?: string;
+  deviceGroup?: string;
 }
 
 export default function ProductLineManagement() {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
+  const [dataSource, setDataSource] = useState<LineDataType[]>([]);
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
   const [addVisible, setAddVisible] = useState<boolean>(false);
   const [addLoading, setAddLoading] = useState<boolean>(false);
@@ -59,7 +66,7 @@ export default function ProductLineManagement() {
     setEditVisible(false);
   }
 
-  const columns: ProColumns<DataSourceType>[] = [
+  const columns: ProColumns<LineDataType>[] = [
     {
       title: '序号',
       dataIndex: 'indexId',
@@ -69,33 +76,32 @@ export default function ProductLineManagement() {
     },
     {
       title: '产线名称',
-      dataIndex: 'name',
+      dataIndex: 'lineName',
       formItemProps: (form, { rowIndex }) => {
         return {
           rules:  [{ required: true, message: '此项为必填项' }] ,
         };
       },
       hideInSearch: true,
-      responsive: ['md']
     },
     {
       title: '产线',
-      dataIndex: 'name',
+      dataIndex: 'lineName',
       hideInTable: true,
     },
     {
       title: '设备/群组',
-      dataIndex: 'equip/group',
+      dataIndex: 'deviceGroup',
       hideInTable: true,
     }, 
     {
       title: '设备群组数量',
-      dataIndex: 'groupNums',
+      dataIndex: 'groupAmount',
       hideInTable: true,
       renderFormItem: (schema,config,form) => {
         return(
           <Input.Group compact>
-            <Form.Item name="groupNumsMin">
+            <Form.Item name="minGroupAmount">
               <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
             </Form.Item>
               <Input
@@ -109,7 +115,7 @@ export default function ProductLineManagement() {
                 placeholder="~"
                 disabled
               />
-              <Form.Item name="groupNumsMax">
+              <Form.Item name="maxGroupAmount">
                 <Input
                   className="site-input-right"
                   style={{
@@ -125,12 +131,12 @@ export default function ProductLineManagement() {
     }, 
     {
       title: '设备数量',
-      dataIndex: 'equipNums',
+      dataIndex: 'deviceAmount',
       hideInTable: true,
       renderFormItem: (schema,config,form) => {
         return(
           <Input.Group compact>
-            <Form.Item name="equipNumsMin">
+            <Form.Item name="minDeviceAmount">
               <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
             </Form.Item>
               <Input
@@ -144,7 +150,7 @@ export default function ProductLineManagement() {
                 placeholder="~"
                 disabled
               />
-              <Form.Item name="equipNumsMax">
+              <Form.Item name="maxDeviceAmount">
                 <Input
                   className="site-input-right"
                   style={{
@@ -166,19 +172,18 @@ export default function ProductLineManagement() {
     },
     {
       title: '设备群组数量',
-      dataIndex: 'groupNums',
+      dataIndex: 'groupAmount',
       hideInSearch: true,
     }, 
     {
-      title: '设备数量',
-      dataIndex: 'equipNums',
+      title: '设备总数量',
+      dataIndex: 'deviceAmount',
       hideInSearch: true,
     }, 
     {
       title: '备注',
       dataIndex: 'comments',
       hideInSearch: true,
-      responsive: ['xl']
     },
     {
       title: '创建时间',
@@ -186,7 +191,6 @@ export default function ProductLineManagement() {
       valueType: 'dateTime',
       sorter: true,
       hideInSearch: true,
-      responsive: ['md']
     },
     {
       title: '创建时间',
@@ -196,12 +200,11 @@ export default function ProductLineManagement() {
       search: {
       transform: (value) => {
         return {
-          startTime: value[0],
-          endTime: value[1],
+          beginDate: value[0],
+          endDate: value[1],
         };
       },
     },
-      responsive: ['md']
     },
     {
       title: '操作',
@@ -249,7 +252,7 @@ export default function ProductLineManagement() {
 
   return (
     <div className='bg-white pa3 h-100'>
-      <EditableProTable<DataSourceType>
+      <EditableProTable<LineDataType>
         rowKey="id"
         columns={columns}
         value={dataSource}

@@ -4,24 +4,29 @@ import ProTable, { EditableProTable } from '@ant-design/pro-table';
 import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
 import ProCard from '@ant-design/pro-card';
 import axios from 'axios'
-import { Button, Modal, Input, Form } from 'antd'
+import { Button, Modal, Input, Form, Popconfirm, message } from 'antd'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
 import AddGroup from './AddGroup'
 import EditGroup from './EditGroup'
 
-type DataSourceType = {
+export type GroupDataType = {
   id: React.Key;
   indexId?: number;
-  name?: string;
-  groupNum?: string;
-  equipmentsNum?: number;
+  deviceGroupName?: string;
+  deviceNo?: string;
+  deviceAmount?: number;
   comments?: string;
   createTime?:string;
+  beginDate?: string;
+  endDate?: string;
+  minDeviceAmount?: number;
+  maxDeviceAmount?: number;
+  deviceName?: string;
 }
 
 export default function EquipGroupManagement() {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
+  const [dataSource, setDataSource] = useState<GroupDataType[]>([]);
   const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
   const [addVisible, setAddVisible] = useState<boolean>(false);
   const [addLoading, setAddLoading] = useState<boolean>(false);
@@ -57,7 +62,25 @@ export default function EquipGroupManagement() {
     setEditVisible(false);
   }
 
-  const columns: ProColumns<DataSourceType>[] = [
+  const confirm = async (record: any) => {
+    try {
+      const deleteResponse: any = await axios.post(`api/deviceGroup/deleteDevice?id=${record.id}`)
+        if (deleteResponse.status == 200) {
+          message.success('Click on Yes');
+          setDataSource(dataSource.filter((item) => item.id !== record.id))
+        }
+        console.log('delete', deleteResponse)
+      } catch (err) {
+        console.log("Failed to delete equipmentGroup: ", err)
+      }
+  }
+
+  function cancel(e:any) {
+    console.log(e);
+    message.error('Click on No');
+  }
+
+  const columns: ProColumns<GroupDataType>[] = [
     {
       title: '序号',
       dataIndex: 'indexId',
@@ -65,39 +88,52 @@ export default function EquipGroupManagement() {
     },
     {
       title: '设备群组名称',
-      dataIndex: 'name',
+      dataIndex: 'deviceGroupName',
       hideInSearch: true,
-      responsive: ['md']
     },
     {
       title: '设备群组',
-      dataIndex: 'equipSearch',
+      dataIndex: 'deviceGroupName',
       hideInTable: true,
+      renderFormItem: (schema,config,form) => {
+        return (
+          <Form.Item name="deviceGroupName">
+            <Input placeholder="请输入设备群组名称/编号"/>
+          </Form.Item>
+        )
+      }
     },
     {
       title: '设备',
-      dataIndex: 'equipSearch',
+      dataIndex: 'deviceName',
       hideInTable: true,
+      renderFormItem: (schema,config,form) => {
+        return (
+          <Form.Item name="deviceName">
+            <Input placeholder="请输入设备名称/编号"/>
+          </Form.Item>
+        )
+      }
     },
     {
       title: '设备群组编号',
-      dataIndex: 'groupNum',
+      dataIndex: 'deviceNo',
       hideInSearch: true,
     },
     {
       title: '设备数量',
-      dataIndex: 'equipmentsNum',
+      dataIndex: 'deviceAmount',
       sorter: true,
       hideInSearch: true,
     },
     {
       title: '设备数量',
-      dataIndex: 'equipmentsNum',
+      dataIndex: 'deviceAmount',
       hideInTable: true,
       renderFormItem: (schema,config,form) => {
         return(
           <Input.Group compact>
-            <Form.Item name="equipNumMin">
+            <Form.Item name="minDeviceAmount">
               <Input style={{ width: 120, textAlign: 'center' }} placeholder="最小值" />
             </Form.Item>
               <Input
@@ -111,7 +147,7 @@ export default function EquipGroupManagement() {
                 placeholder="~"
                 disabled
               />
-              <Form.Item name="equipNumMax">
+              <Form.Item name="maxDeviceAmount">
                 <Input
                   className="site-input-right"
                   style={{
@@ -147,8 +183,8 @@ export default function EquipGroupManagement() {
       search: {
       transform: (value) => {
         return {
-          startTime: value[0],
-          endTime: value[1],
+          beginDate: value[0],
+          endDate: value[1],
         };
       },
     },
@@ -168,22 +204,18 @@ export default function EquipGroupManagement() {
         >
           编辑
         </a>,
-        <a
+        <Popconfirm
+          title="确认删除此设备？"
+          onConfirm={() => confirm(record)}
+          onCancel={cancel}
+          okText="Yes"
+          cancelText="No"
           key="delete"
-          onClick={async() => {
-            try {
-              const deleteResponse: any = await axios.post(`api/device/deleteDevice?id=${record.id}`)
-              if (deleteResponse.status == 200) {
-                setDataSource(dataSource.filter((item) => item.id !== record.id))
-              }
-              console.log('delete', deleteResponse)
-            } catch (err) {
-              console.log("Failed to delete equipment: ", err)
-            }
-          }}
         >
+        <a>
           删除
-        </a>,
+        </a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -199,7 +231,7 @@ export default function EquipGroupManagement() {
 
   return (
     <div className='bg-white pa3 h-100'>
-      <EditableProTable<DataSourceType>
+      <EditableProTable<GroupDataType>
         rowKey="id"
         columns={columns}
         value={dataSource}
@@ -209,16 +241,11 @@ export default function EquipGroupManagement() {
         }}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          let status = transferStatus(params.status)
           const searchParams = {
             ...params, 
-            status, 
-            name: params.name?.trim() || null, 
             id: params.id?.trim() || null,
-            kwh: params.kwh?.trim() || null,
-            capacity: params.capacity?.trim() || null
           }
-          const response:any = await axios.post('api/device/searchAll', searchParams)
+          const response:any = await axios.post('api/deviceGroup/searchAll', searchParams)
           const data = response.data.data.map((data:any, index: number) => {
             return {
               ...data,
@@ -231,22 +258,6 @@ export default function EquipGroupManagement() {
         search={{
           layout: 'vertical',
           defaultCollapsed: true,
-        }}
-        editable={{
-          type: 'multiple',
-          editableKeys,
-          onSave: async (rowKey, data, row) => {
-            console.log('update', data)
-            try {
-              const response: any = await axios.post('api/device/updateDevice',data)
-              if (response.status === 200) {
-                console.log("update success")
-              }
-            } catch (err) {
-              console.log('Failed to update the equipment info: ', err)
-            }
-          },
-          onChange: setEditableRowKeys,
         }}
         recordCreatorProps={false}
         toolBarRender={() => [

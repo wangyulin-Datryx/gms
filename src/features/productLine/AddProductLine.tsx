@@ -1,4 +1,5 @@
 import { Form, Row, Col, Button, Input, Divider } from 'antd'
+import SelectedItems from './SelectedItems'
 const { TextArea } = Input
 
 export default function AddProductLine({ setVisible }: any) {
@@ -10,6 +11,7 @@ export default function AddProductLine({ setVisible }: any) {
   }
 
   return (
+    <>
     <Form
       form={form}
       name="advanced_search"
@@ -52,5 +54,8 @@ export default function AddProductLine({ setVisible }: any) {
         </Col>
       </Row>
     </Form>
+    <h4>选择设备</h4>
+    <SelectedItems />
+    </>
   )
 }
