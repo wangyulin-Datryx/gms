@@ -165,7 +165,6 @@ export default function EquipGroupManagement() {
       title: '备注',
       dataIndex: 'comments',
       hideInSearch: true,
-      responsive: ['xl']
     },
     {
       title: '创建时间',
@@ -220,15 +219,6 @@ export default function EquipGroupManagement() {
     },
   ];
 
-  function transferStatus(status: any) {
-    if (status === '在线') {
-      return '1'
-    } else if (status === '离线') {
-      return '0'
-    }
-    return null
-  }
-
   return (
     <div className='bg-white pa3 h-100'>
       <EditableProTable<GroupDataType>
@@ -252,7 +242,7 @@ export default function EquipGroupManagement() {
               indexId: index + 1
             }
           })
-          console.log('search', params)
+          console.log('search', response)
           return {data, success: true}
         }}
         search={{

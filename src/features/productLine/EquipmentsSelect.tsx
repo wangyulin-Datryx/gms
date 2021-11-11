@@ -1,14 +1,53 @@
+import React, { useState } from 'react';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable, { EditableProTable } from '@ant-design/pro-table';
-import { Form, Input } from 'antd' 
-import { useState } from 'react'
+import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
+import ProCard from '@ant-design/pro-card';
 import axios from 'axios'
-import type { DataSourceType } from '../equipments/EquipmentManagement'
+import { Button, Modal, Input, Form, Popconfirm, message } from 'antd'
+import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
 
-export default function EquipmentsSelect({
-  selectedRowKeys, selectedRows, 
-  setSelctedRowKeys, setSelectedRows
-}: any) {
+
+type DataSourceType = {
+  id: React.Key;
+  indexId?: number;
+  deviceNo?: string;
+  name?: string;
+  info?: string;
+  status?: number;
+  kwh?: string;
+  minKwh?: string;
+  maxKwh?: string;
+  ratedCurrent?: number;
+  minRatedCurrent?: number;
+  maxRatedCurrent?: number;
+  capacity?: string;
+  minCapacity?: string;
+  maxCapacity?: string;
+  comments?: string;
+  energyConsumption?:string;
+  minEnergyConsumption?: string;
+  maxEnergyConsumption?: string;
+  standardWorkHour?: number;
+  minStandardWorkHour?: number;
+  maxStandardWorkHour?: number;
+  createDt?:string;
+  beginDate?: string;
+  endDate?: string;
+  createBy?: string;
+  updateDt?: string;
+  updateBy?: string;
+  maxCurrent?: number;
+  minCurrent?: number;
+  maxVoltage?: number;
+  minVoltage?: number;
+}
+
+export default function EquipmentsSelect({ 
+  selectedEquipRowKeys, setSelctedEquipRowKeys, 
+  selectedEquipRows, setSelectedEquipRows
+  }: any) {
+  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
   const [record, setRecord] = useState<any>({})
 
@@ -256,24 +295,24 @@ export default function EquipmentsSelect({
   ];
 
   const onSelectChange = 
-  (selectedRowKeys: React.Key[], selectedRows: DataSourceType[]) => {
-    setSelctedRowKeys(selectedRowKeys)
-    setSelectedRows(selectedRows)
+  (selectedEquipRowKeys: React.Key[], selectedEquipRows: DataSourceType[]) => {
+    setSelctedEquipRowKeys(selectedEquipRowKeys)
+    setSelectedEquipRows(selectedEquipRows)
   }
 
   const handleCancelClick = (id: any) => {
-    const filteredRowKeys = selectedRowKeys.filter(
+    const filteredRowKeys = selectedEquipRowKeys.filter(
       (rowKey:any) => rowKey !== id)
-    const filteredRows = selectedRows.filter(
+    const filteredRows = selectedEquipRows.filter(
       (row: DataSourceType) => row.id !== id
     )
-    setSelctedRowKeys(filteredRowKeys)
-    setSelectedRows(filteredRows)
+    setSelctedEquipRowKeys(filteredRowKeys)
+    setSelectedEquipRows(filteredRows)
   }
 
   const rowSelection = {
-    selectedRowKeys,
-    selectedRows,
+    selectedRowKeys: selectedEquipRowKeys,
+    selectedRows: selectedEquipRows,
     onChange: onSelectChange
   }
 
@@ -326,26 +365,7 @@ export default function EquipmentsSelect({
         recordCreatorProps={false}
         rowSelection={rowSelection}
         toolBarRender={false}
-        tableAlertRender={
-          ({onCleanSelected}) => {
-            const selectedCard = selectedRows?.map((row: any) => (
-                <>
-                <p 
-                  key={row.id} 
-                  onClick={() => handleCancelClick(row.id)}
-                  className="dim pointer mr3"
-                >
-                  {row.name}  &#10005;
-                </p>
-                </>
-              )
-            )
-            return (
-              <div className="flex flex-wrap">
-                {selectedCard}
-              </div>
-            )
-          }}
+        tableAlertRender={false}
       />
     </div>
   )

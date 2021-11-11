@@ -7,7 +7,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ReferenceLine
+  ReferenceLine,
+  Brush
 } from "recharts"
 import { useState } from 'react'
 import { Select, Spin, Row, Col, DatePicker } from "antd"
@@ -90,7 +91,7 @@ const ElectricCostChart = () => {
           <XAxis 
             dataKey="time"
           />
-          <XAxis
+          {/* <XAxis
             dataKey="time"
             axisLine={false}
             tickLine={false}
@@ -99,7 +100,7 @@ const ElectricCostChart = () => {
             height={1}
             scale="band"
             xAxisId="峰时段"
-          />
+          /> */}
           <YAxis />
           <Tooltip />
           <Legend />
@@ -122,9 +123,9 @@ const ElectricCostChart = () => {
             strokeWidth={3}
             segment={[{ x: '06:00', y: 0 }, { x: '22:00', y: 0 }]} 
           /> */}
-          <ReferenceLine x="06:00" stroke="rgb(231, 143, 19)" strokeDasharray="3 3" />
-          <ReferenceLine x="22:00" stroke="rgb(231, 143, 19)" strokeDasharray="3 3" />
-          
+          {/* <ReferenceLine x="06:00" stroke="rgb(231, 143, 19)" strokeDasharray="3 3" />
+          <ReferenceLine x="22:00" stroke="rgb(231, 143, 19)" strokeDasharray="3 3" /> */}
+          <Brush dataKey="time" height={10} stroke="#8884d8" />
           </LineChart>
         </ResponsiveContainer>
         </div>

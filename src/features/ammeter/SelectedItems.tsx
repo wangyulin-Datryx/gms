@@ -10,6 +10,7 @@ import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
 const { TabPane } = Tabs
 
 export default function SelectedItems({
+  isClickable, setIsClickable,
   selectedEquipRowKeys, setSelctedEquipRowKeys,
   selectedEquipRows, setSelectedEquipRows,
   selectedGroupRowKeys, setSelctedGroupRowKeys,
@@ -24,6 +25,7 @@ export default function SelectedItems({
     )
     setSelctedEquipRowKeys(filteredRowKeys)
     setSelectedEquipRows(filteredRows)
+    setIsClickable(true)
   }
 
   const handleGroupCancelClick = (id: any) => {
@@ -76,6 +78,8 @@ export default function SelectedItems({
       </TabPane>
       <TabPane tab="按设备" key="2">
         <EquipmentsSelect
+          isClickable={isClickable}
+          setIsClickable={setIsClickable}
           selectedEquipRowKeys={selectedEquipRowKeys}
           setSelctedEquipRowKeys={setSelctedEquipRowKeys}
           selectedEquipRows={selectedEquipRows}

@@ -1,13 +1,32 @@
 import { Form, Row, Col, Button, Input, Divider } from 'antd'
+import { useState } from 'react'
 import SelectedItems from './SelectedItems'
+
+import type { DataSourceType } from '../equipments/EquipmentManagement'
+import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
+
 const { TextArea } = Input
 
 export default function AddProductLine({ setVisible }: any) {
   const [form] = Form.useForm()
+  const [selectedEquipRowKeys, setSelctedEquipRowKeys] = useState<React.Key[]>([])
+  const [selectedEquipRows, setSelectedEquipRows] = useState<DataSourceType[]>([])
 
-  const onFinish = async (values: any) => {
-    console.log('add values', values)
-    setVisible(false);
+  const [selectedGroupRowKeys, setSelctedGroupRowKeys] = useState<React.Key[]>([])
+  const [selectedGroupRows, setSelectedGroupRows] = useState<GroupDataType[]>([])
+
+  const selectedEquipIds = [...selectedEquipRowKeys]
+  const selectedGroupIds = [...selectedGroupRowKeys]
+
+  const onFinish = async (form: any) => {
+    const addFormParams = form.getFieldsValue()
+    const addLineParmas = {
+      ...addFormParams, 
+      deviceIds: selectedEquipIds,
+      groupIds: selectedGroupIds
+    }
+    console.log('add values', addLineParmas)
+    // setVisible(false);
   }
 
   return (
@@ -41,21 +60,27 @@ export default function AddProductLine({ setVisible }: any) {
             <TextArea rows={2} />
           </Form.Item>
         </Col>
-        <Divider />
-        <Col span={24} >
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              新增
-            </Button>
-            <Button htmlType="button" onClick={() => setVisible(false)}>
-              取消
-            </Button>
-          </Form.Item>
-        </Col>
       </Row>
     </Form>
     <h4>选择设备</h4>
-    <SelectedItems />
+    <SelectedItems 
+      selectedGroupRowKeys={selectedGroupRowKeys}
+      setSelctedGroupRowKeys={setSelctedGroupRowKeys}
+      selectedGroupRows={selectedGroupRows}
+      setSelectedGroupRows={setSelectedGroupRows}
+      selectedEquipRowKeys={selectedEquipRowKeys}
+      setSelctedEquipRowKeys={setSelctedEquipRowKeys}
+      selectedEquipRows={selectedEquipRows}
+      setSelectedEquipRows={setSelectedEquipRows}
+    />
+    <div className="flex justify-center">
+      <Button className="mr4" type="primary" onClick={() => onFinish(form)}>
+        新增
+      </Button>
+      <Button htmlType="button" onClick={() => setVisible(false)}>
+        取消
+      </Button>
+    </div>
     </>
   )
 }

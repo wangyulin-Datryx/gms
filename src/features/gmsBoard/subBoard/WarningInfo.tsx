@@ -46,7 +46,7 @@ export default function WarningInfo() {
           {/* <p>{`超用量  电压不足`}</p> */}
         </div>
         <div className="flex justify-center items-center mb2">
-          <Progress type="circle" percent={6} format={percent => `${percent} 条预警`} />
+          <Progress type="circle" percent={warnings} format={percent => `${percent} 条预警`} />
         </div>
       </div>
     </div>

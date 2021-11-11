@@ -1,68 +1,118 @@
-import { Form, Row, Col, Button, Input } from 'antd'
+import { Form, Row, Col, Button, Input, Divider } from 'antd'
+import { useState } from 'react'
+import SelectedItems from './SelectedItems'
 
-const ammeterFieldName: any = [
-  ["电表编号", 'collectorId', true], 
-  ['电表型号', 'type', true], 
-  ['GPRSID', 'GPRSID', true],
-  ['互感器型号', 'sensor', false],
-  ['设备ID', 'deviceId', true]
-]
+import type { DataSourceType } from '../equipments/EquipmentManagement'
+import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
 
-export default function AddAmmeter() {
+const { TextArea } = Input
+
+export default function AddAmmeter({ setVisible }: any) {
   const [form] = Form.useForm()
+  const [selectedEquipRowKeys, setSelctedEquipRowKeys] = useState<React.Key[]>([])
+  const [selectedEquipRows, setSelectedEquipRows] = useState<DataSourceType[]>([])
 
-  const getFields = () => {
-    const children = [];
-    for (let i = 0; i < 5; i++) {
-      const required: boolean = ammeterFieldName[i][2]
-      children.push(
-        <Col span={8} key={i}>
-          <Form.Item
-            name={`${ammeterFieldName[i][0]}`}
-            label={`${ammeterFieldName[i][0]}`}
-            rules={[
-              {
-                required: required,
-                message: 'Input something!',
-              },
-            ]}
-          >
-            <Input placeholder="" />
-          </Form.Item>
-        </Col>,
-      );
+  const [selectedGroupRowKeys, setSelctedGroupRowKeys] = useState<React.Key[]>([])
+  const [selectedGroupRows, setSelectedGroupRows] = useState<GroupDataType[]>([])
+
+  const [isClickable, setIsClickable] = useState<boolean>(true);
+
+  const selectedEquipIds = [...selectedEquipRowKeys]
+  const selectedGroupIds = [...selectedGroupRowKeys]
+
+  const onFinish = async (form: any) => {
+    const addFormParams = form.getFieldsValue()
+    const addLineParmas = {
+      ...addFormParams, 
+      deviceIds: selectedEquipIds,
+      groupIds: selectedGroupIds
     }
-    return children;
-  };
+    console.log('add values', addLineParmas)
+    // setVisible(false);
+  }
 
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
   return (
-    <div className='bg-white pa3 vh-100'>
+    <>
     <Form
       form={form}
       name="advanced_search"
       className="ant-advanced-search-form"
       onFinish={onFinish}
     >
-      <Row gutter={24}>{getFields()}</Row>
-      <Row>
-        <Col span={24} style={{ textAlign: 'right' }}>
-          <Button type="primary" htmlType="submit">
-            新增
-          </Button>
-          <Button
-            style={{ margin: '0 8px' }}
-            onClick={() => {
-              form.resetFields();
-            }}
+      <Row gutter={24}>
+        <Col span={12} key='1'>
+          <Form.Item
+            name='lineName'
+            label='产线名称'
+            rules={[
+              {
+                required: true,
+                message: 'Input something!',
+              },
+            ]}
           >
-            重置
-          </Button>
+            <Input placeholder="请输入产线名称" />
+          </Form.Item>
+        </Col>
+        <Col span={12} key='2'>
+          <Form.Item
+            name='GPRSID'
+            label='GPRSID'
+            rules={[
+              {
+                required: true,
+                message: 'Input something!',
+              },
+            ]}
+          >
+            <Input placeholder="请输入GPRSID" />
+          </Form.Item>
+        </Col>
+        <Col span={24} key='3'>
+          <Form.Item
+            name='transformerCoefficient'
+            label='电流互感器变化倍数'
+            rules={[
+              {
+                required: true,
+                message: 'Input something!',
+              },
+            ]}
+          >
+            <Input placeholder="请输入数值" />
+          </Form.Item>
+        </Col>
+        <Col span={24} key='9'>
+          <Form.Item
+            name='comments'
+            label='备注'
+          >
+            <TextArea showCount maxLength={30} rows={2} />
+          </Form.Item>
         </Col>
       </Row>
     </Form>
+    <h4>选择采集对象</h4>
+    <SelectedItems 
+      isClickable={isClickable}
+      setIsClickable={setIsClickable}
+      selectedGroupRowKeys={selectedGroupRowKeys}
+      setSelctedGroupRowKeys={setSelctedGroupRowKeys}
+      selectedGroupRows={selectedGroupRows}
+      setSelectedGroupRows={setSelectedGroupRows}
+      selectedEquipRowKeys={selectedEquipRowKeys}
+      setSelctedEquipRowKeys={setSelctedEquipRowKeys}
+      selectedEquipRows={selectedEquipRows}
+      setSelectedEquipRows={setSelectedEquipRows}
+    />
+    <div className="flex justify-center">
+      <Button className="mr4" type="primary" onClick={() => onFinish(form)}>
+        新增
+      </Button>
+      <Button htmlType="button" onClick={() => setVisible(false)}>
+        取消
+      </Button>
     </div>
+    </>
   )
 }

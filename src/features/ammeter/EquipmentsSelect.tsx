@@ -3,10 +3,10 @@ import type { ProColumns } from '@ant-design/pro-table';
 import ProTable, { EditableProTable } from '@ant-design/pro-table';
 import { ProFormRadio, ProFormField } from '@ant-design/pro-form';
 import ProCard from '@ant-design/pro-card';
-import axios from 'axios'
-import { Button, Modal, Input, Form, Popconfirm, message } from 'antd'
+import axios from 'axios';
+import { Button, Modal, Input, Form, Popconfirm, message } from 'antd';
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
-
+import './EquipmentsSelect.css';
 
 type DataSourceType = {
   id: React.Key;
@@ -43,8 +43,10 @@ type DataSourceType = {
   minVoltage?: number;
 }
 
-export default function EquipmentSelect({ 
-  selectedRowKeys, setSelctedRowKeys, selectedRows, setSelectedRows
+export default function EquipmentsSelect({ 
+  isClickable, setIsClickable,
+  selectedEquipRowKeys, setSelctedEquipRowKeys, 
+  selectedEquipRows, setSelectedEquipRows
   }: any) {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
@@ -291,28 +293,58 @@ export default function EquipmentSelect({
       },
     },
     },
+    {
+      title: '操作',
+      valueType: 'option',
+      fixed: 'right',
+      width: 100,
+      render: (text, record, _, action) => {
+        const isSelected = selectedEquipRowKeys[0] === record.id
+        return [
+        <Button
+          type="primary"
+          key={record.id}
+          onClick={() => {
+            if (isClickable) {
+              setSelctedEquipRowKeys([record.id])
+              setSelectedEquipRows([record])
+              setIsClickable(false)
+            }
+            if (!isClickable && isSelected) {
+              setSelctedEquipRowKeys([])
+              setSelectedEquipRows([])
+              setIsClickable(true)
+            }
+          }}
+        >
+          { isSelected ? "取消选择" : "选择" }
+        </Button>,
+      ]},
+    },
   ];
 
   const onSelectChange = 
-  (selectedRowKeys: React.Key[], selectedRows: DataSourceType[]) => {
-    setSelctedRowKeys(selectedRowKeys)
-    setSelectedRows(selectedRows)
+  (selectedEquipRowKeys: React.Key[], selectedEquipRows: DataSourceType[]) => {
+    setSelctedEquipRowKeys(selectedEquipRowKeys)
+    setSelectedEquipRows(selectedEquipRows)
   }
 
   const handleCancelClick = (id: any) => {
-    const filteredRowKeys = selectedRowKeys.filter(
+    const filteredRowKeys = selectedEquipRowKeys.filter(
       (rowKey:any) => rowKey !== id)
-    const filteredRows = selectedRows.filter(
+    const filteredRows = selectedEquipRows.filter(
       (row: DataSourceType) => row.id !== id
     )
-    setSelctedRowKeys(filteredRowKeys)
-    setSelectedRows(filteredRows)
+    setSelctedEquipRowKeys(filteredRowKeys)
+    setSelectedEquipRows(filteredRows)
   }
 
   const rowSelection = {
-    selectedRowKeys,
-    selectedRows,
-    onChange: onSelectChange
+    selectedRowKeys: selectedEquipRowKeys,
+    selectedRows: selectedEquipRows,
+    onChange: onSelectChange,
+    renderCell: () => false,
+    columnTitle: ' '
   }
 
   return (
@@ -364,24 +396,7 @@ export default function EquipmentSelect({
         recordCreatorProps={false}
         rowSelection={rowSelection}
         toolBarRender={false}
-        tableAlertRender={
-          ({onCleanSelected}) => {
-            const selectedCard = selectedRows?.map((row: any) => (
-                <p 
-                  key={row.id} 
-                  onClick={() => handleCancelClick(row.id)}
-                  className="dim pointer mr3"
-                >
-                  {row.name}  &#10005;
-                </p>
-              )
-            )
-            return (
-              <div className="flex flex-wrap">
-                {selectedCard}
-              </div>
-            )
-          }}
+        tableAlertRender={false}
       />
     </div>
   )

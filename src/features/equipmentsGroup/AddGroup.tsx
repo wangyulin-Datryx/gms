@@ -13,11 +13,13 @@ export default function AddGroup({ setVisible }: any) {
 
   const onFinish = async (values: any) => {
     const addParams = {...values, ids: selectedRowKeys}
+    console.log('addParams', addParams)
     try {
       const response: any = await axios.post(
         'api/deviceGroup/addDeviceGroup',
         addParams
       )
+      console.log("addRes", response)
     } catch(err) {
       console.log("Failed to add group: ", err)
     }
@@ -38,27 +40,27 @@ export default function AddGroup({ setVisible }: any) {
           <Form.Item
             name='name'
             label='设备群组名称'
-            validateTrigger={["onBlur"]}
-            rules={[
-              { 
-                required: true,
-                message: "请输入设备群组名称"
-              },
-              {
-                validator: async(_:any, value: string) => {
-                  console.log('inputValue', value)
-                  const response: any = await axios(
-                    `api/deviceGroup/selectCountByDeviceGroupName?name=${value}`
-                  )
-                  console.log('validate', response)
-                  if (response.data.code == -1) {
-                    return Promise.reject("此名称已存在哦～")
-                  } else {
-                    return Promise.resolve()
-                  }
-                }
-              }
-            ]}
+            // validateTrigger={["onBlur"]}
+            // rules={[
+            //   { 
+            //     required: true,
+            //     message: "请输入设备群组名称"
+            //   },
+            //   {
+            //     validator: async(_:any, value: string) => {
+            //       console.log('inputValue', value)
+            //       const response: any = await axios(
+            //         `api/deviceGroup/selectCountByDeviceGroupName?name=${value}`
+            //       )
+            //       console.log('validate', response)
+            //       if (response.data.code == -1) {
+            //         return Promise.reject("此名称已存在哦～")
+            //       } else {
+            //         return Promise.resolve()
+            //       }
+            //     }
+            //   }
+            // ]}
           >
             <Input placeholder="请输入设备群组名称" />
           </Form.Item>
