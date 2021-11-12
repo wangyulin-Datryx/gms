@@ -50,8 +50,8 @@ export default function CurrentMonthElectricCost() {
         </div>
         <div>
           <h4>本月用电</h4>
-          <p >{`${currentMonthData?.toFixed(2)} kWh`}</p>
-          <p>{`上月用电 ${lastMonthData} KWh`}</p>
+          <p >{`${currentMonthData?.toFixed(2)} kW`}</p>
+          <p>{`上月用电 ${lastMonthData} kW`}</p>
         </div>
         <div className="flex justify-center items-center">
           <ElectricCostSVG 

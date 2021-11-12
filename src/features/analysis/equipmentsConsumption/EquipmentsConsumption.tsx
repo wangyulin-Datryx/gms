@@ -121,7 +121,7 @@ export default function EquipmentsConsumption() {
                 className={index===currentIndex ? "list active" : 'list inactive'}
               >
                 <div><span className={`sequence sequence${index+1}`}>{index+1}</span>{item.name}</div>
-                <div>{item.currentAmount?.toFixed(2)}kWh</div>
+                <div>{item.currentAmount?.toFixed(2)}kW</div>
               </List.Item>
             )}
           }

@@ -85,7 +85,7 @@ export default function MonthVolumeAnalysis() {
         >
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis dataKey="name" scale="band" />
-        <YAxis />
+        <YAxis unit="kW"/>
         <Tooltip />
         <Legend />
         <Bar dataKey="电量" barSize={20} fill="#413ea0" />

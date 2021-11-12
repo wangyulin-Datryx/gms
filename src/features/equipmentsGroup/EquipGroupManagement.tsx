@@ -8,6 +8,7 @@ import { Button, Modal, Input, Form, Popconfirm, message } from 'antd'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
 import AddGroup from './AddGroup'
 import EditGroup from './EditGroup'
+import DetailGroup from './DetailGroup'
 
 export type GroupDataType = {
   id: React.Key;
@@ -27,15 +28,23 @@ export type GroupDataType = {
 export default function EquipGroupManagement() {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<GroupDataType[]>([]);
-  const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
   const [addVisible, setAddVisible] = useState<boolean>(false);
   const [addLoading, setAddLoading] = useState<boolean>(false);
   const [editVisible, setEditVisible] = useState<boolean>(false);
   const [editLoading, setEditLoading] = useState<boolean>(false);
+  const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [record, setRecord] = useState<any>({})
 
   const showModal = () => {
     setAddVisible(true);
+  }
+
+  const handleDetailOk = () => {
+    setDetailVisible(false);
+  }
+
+  const handleDetailCancel = () => {
+    setDetailVisible(false)
   }
 
   const handleOk = () => {
@@ -65,11 +74,11 @@ export default function EquipGroupManagement() {
   const confirm = async (record: any) => {
     try {
       const deleteResponse: any = await axios.post(`api/deviceGroup/deleteDevice?id=${record.id}`)
+      console.log('delete', deleteResponse)
         if (deleteResponse.status == 200) {
           message.success('Click on Yes');
           setDataSource(dataSource.filter((item) => item.id !== record.id))
         }
-        console.log('delete', deleteResponse)
       } catch (err) {
         console.log("Failed to delete equipmentGroup: ", err)
       }
@@ -125,6 +134,19 @@ export default function EquipGroupManagement() {
       dataIndex: 'deviceAmount',
       sorter: true,
       hideInSearch: true,
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            console.log("record", record)
+            setDetailVisible(true)
+            setRecord(record)
+            // setEditVisible(true)
+          }}
+        >
+          {text}
+        </a>,
+      ],
     },
     {
       title: '设备数量',
@@ -172,7 +194,6 @@ export default function EquipGroupManagement() {
       valueType: 'dateTime',
       sorter: true,
       hideInSearch: true,
-      responsive: ['md']
     },
     {
       title: '创建时间',
@@ -196,7 +217,7 @@ export default function EquipGroupManagement() {
         <a
           key="editable"
           onClick={() => {
-            console.log("record", record)
+            
             setRecord(record)
             setEditVisible(true)
           }}
@@ -204,7 +225,7 @@ export default function EquipGroupManagement() {
           编辑
         </a>,
         <Popconfirm
-          title="确认删除此设备？"
+          title="确认删除此设备群组？"
           onConfirm={() => confirm(record)}
           onCancel={cancel}
           okText="Yes"
@@ -231,10 +252,20 @@ export default function EquipGroupManagement() {
         }}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
+          const sortColumn = sorter && Object.keys(sorter)[0]
+          const sortDir = sortColumn && sorter[sortColumn]
+          let sortDirParams
+          if (sortDir === "ascend") {
+            sortDirParams = "asc"
+          } else if (sortDir === "descend") {
+            sortDirParams = "desc"
+          }
           const searchParams = {
             ...params, 
             id: params.id?.trim() || null,
+            orderByClause: sortColumn ? `${sortColumn} ${sortDirParams}` : null
           }
+          console.log('searchParams', searchParams)
           const response:any = await axios.post('api/deviceGroup/searchAll', searchParams)
           const data = response.data.data.map((data:any, index: number) => {
             return {
@@ -242,6 +273,7 @@ export default function EquipGroupManagement() {
               indexId: index + 1
             }
           })
+          
           console.log('search', response)
           return {data, success: true}
         }}
@@ -284,6 +316,15 @@ export default function EquipGroupManagement() {
         footer={false}
       >
         <EditGroup setVisible={setEditVisible} record={record}/>
+      </Modal>
+      <Modal
+        visible={detailVisible}
+        title="设备群组详情"
+        onOk={handleDetailOk}
+        onCancel={handleDetailCancel}
+        footer={false}
+      >
+        <DetailGroup setVisible={setDetailVisible} record={record}/>
       </Modal>
     </div>
   )

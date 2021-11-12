@@ -34,11 +34,38 @@ export default function EditEquipment({ setVisible, record }: any) {
           <Form.Item
             name='name'
             label='设备名称'
+            validateTrigger={["onBlur", "onChange"]}
             rules={[
               {
-                required: true,
-                message: 'Input something!',
+                validateTrigger: ["onBlur"],
+                validator: async(_:any, value: string) => {
+                  console.log('inputValue',value)
+                  console.log('record',record)
+                  if (record.name === value.trim()) {
+                    return Promise.resolve()
+                  }
+                  const response: any = await axios(
+                    `api/device/selectCountByDeviceName?name=${value}`
+                  )
+                  console.log('validate', response.data)
+                  if (response.data.code == -1) {
+                    return Promise.reject("此名称已存在哦～")
+                  } else {
+                    return Promise.resolve()
+                  }
+                }
               },
+              { 
+                validateTrigger: ["onChange", "onBlur"],
+                required: true,
+                message: "请输入设备名称"
+              },
+              { 
+                validateTrigger: ["onChange", "onBlur"],
+                max: 12,
+                message: "不能超过12个字符"
+              },
+              
             ]}
           >
             <Input placeholder="请输入设备名称" />

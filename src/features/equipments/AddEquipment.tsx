@@ -36,13 +36,10 @@ export default function AddEquipment({ setVisible }: any) {
           <Form.Item
             name='name'
             label='设备名称'
-            validateTrigger={["onBlur"]}
+            validateTrigger={["onBlur", "onChange"]}
             rules={[
-              { 
-                required: true,
-                message: "请输入设备名称"
-              },
               {
+                validateTrigger: ["onBlur"],
                 validator: async(_:any, value: string) => {
                   console.log('inputValue', value)
                   const response: any = await axios(
@@ -55,7 +52,13 @@ export default function AddEquipment({ setVisible }: any) {
                     return Promise.resolve()
                   }
                 }
-              }
+              },
+              { 
+                validateTrigger: ["onChange", "onBlur"],
+                required: true,
+                message: "请输入设备名称"
+              },
+              
             ]}
           >
             <Input placeholder="请输入设备名称" />

@@ -25,11 +25,11 @@ export default function WarningTypeBar() {
         )
         const data = response.data.data && response.data.data[0]
         const warningData = [
-          {name: '超电流', 次数: data.type1},
-          {name: '电流不足', 次数: data.type2},
-          {name: '超电压', 次数: data.type3},
-          {name: '电压不足', 次数: data.type4},
-          {name: '设备离线', 次数: data.type5}
+          {name: '超电流', 条数: data.type1},
+          {name: '电流不足', 条数: data.type2},
+          {name: '超电压', 条数: data.type3},
+          {name: '电压不足', 条数: data.type4},
+          {name: '设备离线', 条数: data.type5}
         ]
         setWarningTypeData(warningData)
       } catch (err) {
@@ -55,7 +55,7 @@ export default function WarningTypeBar() {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="次数" barSize={20} fill="rgb(113, 212, 212)" />
+        <Bar dataKey="条数" barSize={20} fill="rgb(113, 212, 212)" />
       </ComposedChart>
     </ResponsiveContainer>
   )

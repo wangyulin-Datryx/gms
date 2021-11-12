@@ -51,7 +51,7 @@ export default function MainEquipmentInfo() {
               return (
                 <List.Item>
                   <div>{item.name}&emsp;</div>
-                  <div>{item.currentAmount?.toFixed(2)}kWh</div>
+                  <div>{item.currentAmount?.toFixed(2)}kW</div>
                 </List.Item>
               )}
             }

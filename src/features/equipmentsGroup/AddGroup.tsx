@@ -11,20 +11,23 @@ export default function AddGroup({ setVisible }: any) {
   const [selectedRowKeys, setSelctedRowKeys] = useState<React.Key[]>([])
   const [selectedRows, setSelectedRows] = useState<DataSourceType[]>([])
 
-  const onFinish = async (values: any) => {
-    const addParams = {...values, ids: selectedRowKeys}
+  const onFinish = async (form: any) => {
+    const formItems = form.getFieldsValue()
+    const addParams = {...formItems, deviceIds: selectedRowKeys}
     console.log('addParams', addParams)
     try {
       const response: any = await axios.post(
         'api/deviceGroup/addDeviceGroup',
         addParams
       )
+      if (response.status === 200) {
+        setVisible(false);
+      }
       console.log("addRes", response)
     } catch(err) {
       console.log("Failed to add group: ", err)
     }
-    console.log('add values', addParams)
-    setVisible(false);
+    
   }
 
   return (
@@ -38,29 +41,37 @@ export default function AddGroup({ setVisible }: any) {
       <Row gutter={24}>
         <Col span={24} key='1'>
           <Form.Item
-            name='name'
+            name='deviceGroupName'
             label='设备群组名称'
-            // validateTrigger={["onBlur"]}
-            // rules={[
-            //   { 
-            //     required: true,
-            //     message: "请输入设备群组名称"
-            //   },
-            //   {
-            //     validator: async(_:any, value: string) => {
-            //       console.log('inputValue', value)
-            //       const response: any = await axios(
-            //         `api/deviceGroup/selectCountByDeviceGroupName?name=${value}`
-            //       )
-            //       console.log('validate', response)
-            //       if (response.data.code == -1) {
-            //         return Promise.reject("此名称已存在哦～")
-            //       } else {
-            //         return Promise.resolve()
-            //       }
-            //     }
-            //   }
-            // ]}
+            validateTrigger={["onBlur", "onChange"]}
+            rules={[
+              {
+                validateTrigger: ["onBlur"],
+                validator: async(_:any, value: string) => {
+                  console.log('inputValue', value)
+                  const response: any = await axios(
+                    `api/deviceGroup/selectCountByDeviceGroupName?deviceGroupName=${value}`
+                  )
+                  console.log('validate', response)
+                  if (response.data.code == -1) {
+                    return Promise.reject("此名称已存在哦～")
+                  } else {
+                    return Promise.resolve()
+                  }
+                }
+              },
+              { 
+                validateTrigger: ["onChange", "onBlur"],
+                required: true,
+                message: "请输入设备群组名称"
+              },
+              {
+                validateTrigger: ["onChange", "onBlur"],
+                max: 12, 
+                message: "不能超过12个字符" 
+              },
+              
+            ]}
           >
             <Input placeholder="请输入设备群组名称" />
           </Form.Item>
@@ -70,23 +81,11 @@ export default function AddGroup({ setVisible }: any) {
             name='comments'
             label='备注'
           >
-            <TextArea placeholder="请输入备注" rows={2} />
-          </Form.Item>
-        </Col>
-        <Divider />
-        <Col span={24} >
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              新增
-            </Button>
-            <Button htmlType="button" onClick={() => setVisible(false)}>
-              取消
-            </Button>
+            <TextArea placeholder="请输入备注" rows={2} maxLength={30} showCount />
           </Form.Item>
         </Col>
       </Row>
     </Form>
-    
     <h4>选择设备</h4>
     <EquipmentSelect 
       selectedRowKeys={selectedRowKeys}
@@ -94,7 +93,15 @@ export default function AddGroup({ setVisible }: any) {
       selectedRows={selectedRows}
       setSelectedRows={setSelectedRows}
     />
-        
+    <Divider />
+    <div className="flex justify-center">
+      <Button className="mr4" type="primary" onClick={() => onFinish(form)}>
+        新增
+      </Button>
+      <Button htmlType="button" onClick={() => setVisible(false)}>
+        取消
+      </Button>
+    </div>   
   </>
   )
 }
