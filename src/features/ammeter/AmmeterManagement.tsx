@@ -9,6 +9,7 @@ import axios from 'axios'
 import moment from 'moment'
 
 import AddAmmeter from "./AddAmmeter"
+import EditAmmeter from "./EditAmmeter"
 
 export type AmmeterDataType = {
   id: React.Key;
@@ -34,6 +35,7 @@ export default function AmmeterManagement (){
   const [addLoading, setAddLoading] = useState<boolean>(false);
   const [editVisible, setEditVisible] = useState<boolean>(false);
   const [editLoading, setEditLoading] = useState<boolean>(false);
+  const [record, setRecord] = useState<any>({})
 
   const showModal = () => {
     setAddVisible(true);
@@ -65,7 +67,9 @@ export default function AmmeterManagement (){
 
   const confirm = async (record: any) => {
     try {
-      const deleteResponse: any = await axios.post(`api/device/deleteDevice?id=${record.id}`)
+      const deleteResponse: any = await axios.post(
+        `api/collector/deleteCollector?id=${record.id}`
+      )
         if (deleteResponse.status == 200) {
           message.success('Click on Yes');
           setDataSource(dataSource.filter((item) => item.id !== record.id))
@@ -214,32 +218,30 @@ export default function AmmeterManagement (){
       title: '操作',
       valueType: 'option',
       width: 100,
+      fixed: 'right',
       render: (text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            console.log("record", record)
+            setRecord(record)
+            setEditVisible(true)
           }}
         >
           编辑
         </a>,
-        <a
+        <Popconfirm
+          title="确认删除此设备？"
+          onConfirm={() => confirm(record)}
+          onCancel={cancel}
+          okText="Yes"
+          cancelText="No"
           key="delete"
-          onClick={async() => {
-            try {
-              const response: any = await axios.post(
-                `api/collector/deleteCollector?id=${record.id}`
-              )
-              if (response.status === 200) {
-                setDataSource(dataSource.filter((item) => item.id !== record.id))
-              }
-            } catch(err) {
-              console.log('Failed to delete collector: ', err)
-            }
-          }}
         >
-          删除
-        </a>,
+          <a>
+            删除
+          </a>
+        </Popconfirm>,
       ],
     },
   ]
@@ -300,10 +302,11 @@ export default function AmmeterManagement (){
         onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
+        width={700}
       >
         <AddAmmeter setVisible={setAddVisible}/>
       </Modal>
-      {/* <Modal
+      <Modal
         visible={editVisible}
         title="编辑"
         onOk={handleEditOk}
@@ -311,7 +314,7 @@ export default function AmmeterManagement (){
         footer={false}
       >
         <EditAmmeter setVisible={setEditVisible} record={record}/>
-      </Modal> */}
+      </Modal>
     </div>
   );
 };

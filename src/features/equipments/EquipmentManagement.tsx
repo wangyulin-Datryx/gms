@@ -431,7 +431,7 @@ export default function EquipmentManagement() {
         <a>
           删除
         </a>
-        </Popconfirm>,
+        </Popconfirm>, 
       ],
     },
   ];

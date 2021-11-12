@@ -72,6 +72,7 @@ export default function EquipGroupManagement() {
   }
 
   const confirm = async (record: any) => {
+    console.log("deleteRecord", record)
     try {
       const deleteResponse: any = await axios.post(`api/deviceGroup/deleteDevice?id=${record.id}`)
       console.log('delete', deleteResponse)
@@ -305,6 +306,7 @@ export default function EquipGroupManagement() {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={false}
+        width={700}
       >
         <AddGroup setVisible={setAddVisible}/>
       </Modal>
@@ -314,6 +316,7 @@ export default function EquipGroupManagement() {
         onOk={handleEditOk}
         onCancel={handleEditCancel}
         footer={false}
+        width={700}
       >
         <EditGroup setVisible={setEditVisible} record={record}/>
       </Modal>

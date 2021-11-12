@@ -4,6 +4,7 @@ import SelectedItems from './SelectedItems'
 
 import type { DataSourceType } from '../equipments/EquipmentManagement'
 import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
+import type { LineDataType } from '../productLine/ProductLineManagement'
 
 const { TextArea } = Input
 
@@ -15,17 +16,21 @@ export default function AddAmmeter({ setVisible }: any) {
   const [selectedGroupRowKeys, setSelctedGroupRowKeys] = useState<React.Key[]>([])
   const [selectedGroupRows, setSelectedGroupRows] = useState<GroupDataType[]>([])
 
+  const [selectedLineRowKeys, setSelctedLineRowKeys] = useState<React.Key[]>([])
+  const [selectedLineRows, setSelectedLineRows] = useState<LineDataType[]>([])
+
   const [isClickable, setIsClickable] = useState<boolean>(true);
 
   const selectedEquipIds = [...selectedEquipRowKeys]
   const selectedGroupIds = [...selectedGroupRowKeys]
+  const selectedLineIds = [...selectedLineRowKeys]
 
-  const onFinish = async (form: any) => {
-    const addFormParams = form.getFieldsValue()
+  const onFinish = async (values: any) => {
     const addLineParmas = {
-      ...addFormParams, 
+      ...values, 
       deviceIds: selectedEquipIds,
-      groupIds: selectedGroupIds
+      groupIds: selectedGroupIds,
+      lineIds: selectedLineIds,
     }
     console.log('add values', addLineParmas)
     // setVisible(false);
@@ -37,7 +42,6 @@ export default function AddAmmeter({ setVisible }: any) {
       form={form}
       name="advanced_search"
       className="ant-advanced-search-form"
-      onFinish={onFinish}
     >
       <Row gutter={24}>
         <Col span={12} key='1'>
@@ -47,7 +51,7 @@ export default function AddAmmeter({ setVisible }: any) {
             rules={[
               {
                 required: true,
-                message: 'Input something!',
+                message: '请输入产线名称',
               },
             ]}
           >
@@ -61,7 +65,7 @@ export default function AddAmmeter({ setVisible }: any) {
             rules={[
               {
                 required: true,
-                message: 'Input something!',
+                message: '请输入GPRSID',
               },
             ]}
           >
@@ -75,7 +79,7 @@ export default function AddAmmeter({ setVisible }: any) {
             rules={[
               {
                 required: true,
-                message: 'Input something!',
+                message: '请输入电流互感器变化倍数',
               },
             ]}
           >
@@ -104,14 +108,27 @@ export default function AddAmmeter({ setVisible }: any) {
       setSelctedEquipRowKeys={setSelctedEquipRowKeys}
       selectedEquipRows={selectedEquipRows}
       setSelectedEquipRows={setSelectedEquipRows}
+      selectedLineRowKeys={selectedLineRowKeys}
+      setSelctedLineRowKeys={setSelctedLineRowKeys}
+      selectedLineRows={selectedLineRows}
+      setSelectedLineRows={setSelectedLineRows}
     />
     <div className="flex justify-center">
-      <Button className="mr4" type="primary" onClick={() => onFinish(form)}>
+      <Form form={form} onFinish={onFinish}>
+      <Form.Item>
+      <Button 
+        className="mr4" 
+        type="primary" 
+        htmlType="submit"
+        onClick={() => onFinish(form)}
+      >
         新增
       </Button>
       <Button htmlType="button" onClick={() => setVisible(false)}>
         取消
       </Button>
+      </Form.Item>
+      </Form>
     </div>
     </>
   )

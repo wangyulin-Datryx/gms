@@ -171,6 +171,7 @@ export default function GroupsSelect({
         recordCreatorProps={false}
         toolBarRender={false}
         rowSelection={rowSelection}
+        tableAlertRender={false}
       />
     </div>
   )

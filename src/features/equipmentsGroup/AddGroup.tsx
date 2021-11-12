@@ -11,9 +11,8 @@ export default function AddGroup({ setVisible }: any) {
   const [selectedRowKeys, setSelctedRowKeys] = useState<React.Key[]>([])
   const [selectedRows, setSelectedRows] = useState<DataSourceType[]>([])
 
-  const onFinish = async (form: any) => {
-    const formItems = form.getFieldsValue()
-    const addParams = {...formItems, deviceIds: selectedRowKeys}
+  const onFinish = async (values: any) => {
+    const addParams = {...values, deviceIds: selectedRowKeys}
     console.log('addParams', addParams)
     try {
       const response: any = await axios.post(
@@ -36,7 +35,6 @@ export default function AddGroup({ setVisible }: any) {
       form={form}
       name="advanced_search"
       className="ant-advanced-search-form"
-      onFinish={onFinish}
     >
       <Row gutter={24}>
         <Col span={24} key='1'>
@@ -95,12 +93,20 @@ export default function AddGroup({ setVisible }: any) {
     />
     <Divider />
     <div className="flex justify-center">
-      <Button className="mr4" type="primary" onClick={() => onFinish(form)}>
+    <Form form={form} onFinish={onFinish}>
+    <Form.Item>
+      <Button 
+        className="mr4" 
+        type="primary" 
+        htmlType="submit"
+      >
         新增
       </Button>
       <Button htmlType="button" onClick={() => setVisible(false)}>
         取消
       </Button>
+    </Form.Item>
+    </Form>
     </div>   
   </>
   )

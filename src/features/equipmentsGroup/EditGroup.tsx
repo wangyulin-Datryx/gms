@@ -102,7 +102,11 @@ export default function EditGroup({ setVisible, record }: any) {
     />
     <Divider />
     <div className="flex justify-center">
-      <Button className="mr4" type="primary" onClick={() => onFinish(form)}>
+      <Button 
+        className="mr4" 
+        type="primary" 
+        onClick={() => onFinish(form)}
+      >
         保存
       </Button>
       <Button htmlType="button" onClick={() => setVisible(false)}>

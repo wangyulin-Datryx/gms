@@ -6,101 +6,25 @@ import ProCard from '@ant-design/pro-card';
 import axios from 'axios'
 import { Button, Modal, Input, Form, Popconfirm, message } from 'antd'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
-import AddProductLine from './AddProductLine';
-import EditProductLine from './EditProductLine';
-import DetailProductLine from './DetailProductLine';
 
+import type { LineDataType } from "../productLine/ProductLineManagement"
 
-export type LineDataType = {
-  id: React.Key;
-  indexId?: number;
-  lineNo?: string;
-  lineName?: string;
-  groupAmount?: number;
-  minGroupAmount: number;
-  maxGroupAmount: number;
-  deviceAmount?: number;
-  minDeviceAmount?: number;
-  maxDeviceAmount?: number;
-  comments?: string;
-  createTime?:string;
-  beginDate?: string;
-  endDate?: string;
-  deviceGroup?: string;
-}
-
-export default function ProductLineManagement() {
+export default function LineSelect({ 
+  isClickable, setIsClickable,
+  selectedLineRowKeys, setSelctedLineRowKeys,
+  selectedLineRows, setSelectedLineRows
+  }: any) {
   const [dataSource, setDataSource] = useState<LineDataType[]>([]);
-  const [addVisible, setAddVisible] = useState<boolean>(false);
-  const [addLoading, setAddLoading] = useState<boolean>(false);
-  const [editVisible, setEditVisible] = useState<boolean>(false);
-  const [editLoading, setEditLoading] = useState<boolean>(false);
-  const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [record, setRecord] = useState<any>({})
 
-  const showModal = () => {
-    setAddVisible(true);
-  }
-
-  const handleOk = () => {
-    setAddLoading(true);
-    setTimeout(() => {
-      setAddLoading(false);
-      setAddVisible(false);
-    }, 3000);
-  }
-
-  const handleCancel = () => {
-    setAddVisible(false);
-  }
-
-  const handleEditOk = () => {
-    setEditLoading(true);
-    setTimeout(() => {
-      setEditLoading(false);
-      setEditVisible(false);
-    }, 3000);
-  }
-
-  const handleEditCancel = () => {
-    setEditVisible(false);
-  }
-
-  const handleDetailOk = () => {
-    setDetailVisible(false);
-  }
-
-  const handleDetailCancel = () => {
-    setDetailVisible(false);
-  }
-
-  const confirm = async (record: any) => {
-    console.log("id", record)
-    try {
-      const deleteResponse: any = await axios.post(`api/deviceProduction/deleteDevice?id=${record.id}`)
-        if (deleteResponse.status == 200) {
-          message.success('Click on Yes');
-          setDataSource(dataSource.filter((item) => item.id !== record.id))
-        }
-        console.log('delete', deleteResponse)
-      } catch (err) {
-        console.log("Failed to delete equipment: ", err)
-      }
-  }
-
-  function cancel(e:any) {
-    console.log(e);
-    message.error('Click on No');
-  }
-
   const columns: ProColumns<LineDataType>[] = [
-    {
-      title: '序号',
-      dataIndex: 'indexId',
-      key: 'indexId',
-      editable: false,
-      hideInSearch: true,
-    },
+    // {
+    //   title: '序号',
+    //   dataIndex: 'indexId',
+    //   key: 'indexId',
+    //   editable: false,
+    //   hideInSearch: true,
+    // },
     {
       title: '产线名称',
       dataIndex: 'lineName',
@@ -201,35 +125,11 @@ export default function ProductLineManagement() {
       title: '设备群组数量',
       dataIndex: 'groupAmount',
       hideInSearch: true,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            console.log("record", record)
-            setRecord(record)
-            setDetailVisible(true)
-          }}
-        >
-          {text}
-        </a>,
-      ]
     }, 
     {
       title: '设备总数量',
       dataIndex: 'deviceAmount',
       hideInSearch: true,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            console.log("record", record)
-            setRecord(record)
-            setDetailVisible(true)
-          }}
-        >
-          {text}
-        </a>,
-      ]
     }, 
     {
       title: '备注',
@@ -260,33 +160,46 @@ export default function ProductLineManagement() {
     {
       title: '操作',
       valueType: 'option',
+      fixed: 'right',
       width: 100,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
+      render: (text, record, _, action) => {
+        const isSelected = selectedLineRowKeys[0] === record.id
+        return [
+        <Button
+          type="primary"
+          key={record.id}
           onClick={() => {
-            console.log("record", record)
-            setRecord(record)
-            setEditVisible(true)
+            if (isClickable) {
+              setSelctedLineRowKeys([record.id])
+              setSelectedLineRows([record])
+              setIsClickable(false)
+            }
+            if (!isClickable && isSelected) {
+              setSelctedLineRowKeys([])
+              setSelectedLineRows([])
+              setIsClickable(true)
+            }
           }}
         >
-          编辑
-        </a>,
-        <Popconfirm
-          title="确认删除此生产线？"
-          onConfirm={() => confirm(record)}
-          onCancel={cancel}
-          okText="Yes"
-          cancelText="No"
-          key="delete"
-        >
-        <a>
-          删除
-        </a>
-        </Popconfirm>
-      ],
+          { isSelected ? "取消选择" : "选择" }
+        </Button>,
+      ]},
     },
   ];
+
+  const onSelectChange = 
+  (selectedLineRowKeys: React.Key[], selectedLineRows: LineDataType[]) => {
+    setSelctedLineRowKeys(selectedLineRowKeys)
+    setSelectedLineRows(selectedLineRows)
+  }
+
+  const rowSelection = {
+    selectedRowKeys: selectedLineRowKeys,
+    selectedRows: selectedLineRows,
+    onChange: onSelectChange,
+    renderCell: () => false,
+    columnTitle: " "
+  }
 
   return (
     <div className='bg-white pa3 h-100'>
@@ -319,52 +232,10 @@ export default function ProductLineManagement() {
           defaultCollapsed: true,
         }}
         recordCreatorProps={false}
-        toolBarRender={() => [
-        <Button 
-          key="button" 
-          icon={<PlusOutlined />} 
-          type="primary"
-          onClick={showModal}
-        >
-          新增
-        </Button>,
-        <Button key="button" type="primary">
-          批量导入
-        </Button>,
-        <Button key="button" type="primary">
-          导出
-        </Button>
-      ]}
+        toolBarRender={false}
+        tableAlertRender={false}
+        rowSelection={rowSelection}
       />
-      <Modal
-        visible={addVisible}
-        title="新增"
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <AddProductLine setVisible={setAddVisible}/>
-      </Modal>
-      <Modal
-        visible={editVisible}
-        title="编辑"
-        onOk={handleEditOk}
-        onCancel={handleEditCancel}
-        footer={false}
-      >
-        <EditProductLine setVisible={setEditVisible} record={record}/>
-      </Modal>
-      <Modal
-        visible={detailVisible}
-        title="产线详情"
-        onOk={handleDetailOk}
-        onCancel={handleDetailCancel}
-        footer={false}
-      >
-        <DetailProductLine setVisible={setDetailVisible} record={record}/>
-      </Modal>
     </div>
   )
 }
-
-

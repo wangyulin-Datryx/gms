@@ -1,15 +1,14 @@
 import { Form, Row, Col, Button, Input, Divider } from 'antd'
 import { useState } from 'react'
-import axios from "axios"
-
 import SelectedItems from './SelectedItems'
 
 import type { DataSourceType } from '../equipments/EquipmentManagement'
 import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
+import type { LineDataType } from '../productLine/ProductLineManagement'
 
 const { TextArea } = Input
 
-export default function AddProductLine({ setVisible }: any) {
+export default function EditAmmeter({ setVisible, record }: any) {
   const [form] = Form.useForm()
   const [selectedEquipRowKeys, setSelctedEquipRowKeys] = useState<React.Key[]>([])
   const [selectedEquipRows, setSelectedEquipRows] = useState<DataSourceType[]>([])
@@ -17,72 +16,75 @@ export default function AddProductLine({ setVisible }: any) {
   const [selectedGroupRowKeys, setSelctedGroupRowKeys] = useState<React.Key[]>([])
   const [selectedGroupRows, setSelectedGroupRows] = useState<GroupDataType[]>([])
 
+  const [selectedLineRowKeys, setSelctedLineRowKeys] = useState<React.Key[]>([])
+  const [selectedLineRows, setSelectedLineRows] = useState<LineDataType[]>([])
+
+  const [isClickable, setIsClickable] = useState<boolean>(true);
+
   const selectedEquipIds = [...selectedEquipRowKeys]
   const selectedGroupIds = [...selectedGroupRowKeys]
+  const selectedLineIds = [...selectedLineRowKeys]
 
   const onFinish = async (values: any) => {
-    // const addFormParams = form.getFieldsValue()
     const addLineParmas = {
       ...values, 
       deviceIds: selectedEquipIds,
-      groupIds: selectedGroupIds
+      groupIds: selectedGroupIds,
+      lineIds: selectedLineIds,
     }
     console.log('add values', addLineParmas)
-    try {
-      const response: any = await axios.post(
-        "api/deviceProduction/addDeviceProduction",
-        addLineParmas
-      )
-      if (response.status === 200) {
-        setVisible(false)
-      }
-    } catch(err) {
-      console.log("Failed to add Line: ", err)
-    }
+    // setVisible(false);
   }
 
   return (
     <>
     <Form
       form={form}
+      initialValues={record}
       name="advanced_search"
       className="ant-advanced-search-form"
     >
       <Row gutter={24}>
-        <Col span={24} key='1'>
+        <Col span={12} key='1'>
           <Form.Item
             name='lineName'
             label='产线名称'
-            validateTrigger={["onBlur", "onChange"]}
             rules={[
               {
-                validateTrigger: ["onBlur"],
-                validator: async(_:any, value: string) => {
-                  console.log('inputValue', value)
-                  const response: any = await axios(
-                    `api/deviceProduction/selectCountByDeviceProductionName?productionName=${value}`
-                  )
-                  console.log('validate', response)
-                  if (response.data.code !== -1) {
-                    return Promise.reject("此名称已存在哦～")
-                  } else {
-                    return Promise.resolve()
-                  }
-                }
-              },
-              { 
-                validateTrigger: ["onChange", "onBlur"],
                 required: true,
-                message: "请输入产线名称"
+                message: '请输入产线名称',
               },
-              {
-                validateTrigger: ["onChange", "onBlur"],
-                max: 12, 
-                message: "不能超过12个字符" 
-              }
             ]}
           >
             <Input placeholder="请输入产线名称" />
+          </Form.Item>
+        </Col>
+        <Col span={12} key='2'>
+          <Form.Item
+            name='GPRSID'
+            label='GPRSID'
+            rules={[
+              {
+                required: true,
+                message: '请输入GPRSID',
+              },
+            ]}
+          >
+            <Input placeholder="请输入GPRSID" />
+          </Form.Item>
+        </Col>
+        <Col span={24} key='3'>
+          <Form.Item
+            name='transformerCoefficient'
+            label='电流互感器变化倍数'
+            rules={[
+              {
+                required: true,
+                message: '请输入电流互感器变化倍数',
+              },
+            ]}
+          >
+            <Input placeholder="请输入数值" />
           </Form.Item>
         </Col>
         <Col span={24} key='9'>
@@ -90,13 +92,15 @@ export default function AddProductLine({ setVisible }: any) {
             name='comments'
             label='备注'
           >
-            <TextArea rows={2} maxLength={30} showCount/>
+            <TextArea showCount maxLength={30} rows={2} />
           </Form.Item>
         </Col>
       </Row>
     </Form>
-    <h4>选择设备</h4>
+    <h4>选择采集对象</h4>
     <SelectedItems 
+      isClickable={isClickable}
+      setIsClickable={setIsClickable}
       selectedGroupRowKeys={selectedGroupRowKeys}
       setSelctedGroupRowKeys={setSelctedGroupRowKeys}
       selectedGroupRows={selectedGroupRows}
@@ -105,22 +109,26 @@ export default function AddProductLine({ setVisible }: any) {
       setSelctedEquipRowKeys={setSelctedEquipRowKeys}
       selectedEquipRows={selectedEquipRows}
       setSelectedEquipRows={setSelectedEquipRows}
+      selectedLineRowKeys={selectedLineRowKeys}
+      setSelctedLineRowKeys={setSelctedLineRowKeys}
+      selectedLineRows={selectedLineRows}
+      setSelectedLineRows={setSelectedLineRows}
     />
     <div className="flex justify-center">
-    <Form form={form} onFinish={onFinish}>
-    <Form.Item>
+      <Form form={form} onFinish={onFinish}>
+      <Form.Item>
       <Button 
         className="mr4" 
         type="primary" 
         htmlType="submit"
       >
-        新增
+        保存
       </Button>
       <Button htmlType="button" onClick={() => setVisible(false)}>
         取消
       </Button>
-    </Form.Item>
-    </Form>
+      </Form.Item>
+      </Form>
     </div>
     </>
   )

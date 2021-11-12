@@ -1,12 +1,13 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
-import { Form, Input } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { useState } from 'react';
 import axios from 'axios';
 
 import type { GroupDataType } from "../equipmentsGroup/EquipGroupManagement"
 
 export default function GroupsSelect({ 
+  isClickable, setIsClickable,
   selectedGroupRowKeys, setSelctedGroupRowKeys, 
   selectedGroupRows, setSelectedGroupRows
   }: any) {
@@ -124,6 +125,34 @@ export default function GroupsSelect({
       dataIndex: 'comments',
       hideInSearch: true,
     },
+    {
+      title: '操作',
+      valueType: 'option',
+      fixed: 'right',
+      width: 100,
+      render: (text, record, _, action) => {
+        const isSelected = selectedGroupRowKeys[0] === record.id
+        return [
+        <Button
+          type="primary"
+          key={record.id}
+          onClick={() => {
+            if (isClickable) {
+              setSelctedGroupRowKeys([record.id])
+              setSelectedGroupRows([record])
+              setIsClickable(false)
+            }
+            if (!isClickable && isSelected) {
+              setSelctedGroupRowKeys([])
+              setSelectedGroupRows([])
+              setIsClickable(true)
+            }
+          }}
+        >
+          { isSelected ? "取消选择" : "选择" }
+        </Button>,
+      ]},
+    },
   ];
 
   const onSelectChange = 
@@ -135,7 +164,9 @@ export default function GroupsSelect({
   const rowSelection = {
     selectedRowKeys: selectedGroupRowKeys,
     selectedRows: selectedGroupRows,
-    onChange: onSelectChange
+    onChange: onSelectChange,
+    renderCell: () => false,
+    columnTitle: " "
   }
 
   return (
@@ -171,7 +202,8 @@ export default function GroupsSelect({
         recordCreatorProps={false}
         toolBarRender={false}
         rowSelection={rowSelection}
-      />
+        tableAlertRender={false}
+      /> 
     </div>
   )
 }

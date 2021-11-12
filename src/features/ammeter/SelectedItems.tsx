@@ -3,9 +3,11 @@ import { Tabs } from 'antd'
 
 import EquipmentsSelect from './EquipmentsSelect'
 import GroupsSelect from './GroupsSelect'
+import LineSelect from './LineSelect'
 
 import type { DataSourceType } from '../equipments/EquipmentManagement'
 import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
+import type { LineDataType } from '../productLine/ProductLineManagement'
 
 const { TabPane } = Tabs
 
@@ -14,7 +16,9 @@ export default function SelectedItems({
   selectedEquipRowKeys, setSelctedEquipRowKeys,
   selectedEquipRows, setSelectedEquipRows,
   selectedGroupRowKeys, setSelctedGroupRowKeys,
-  selectedGroupRows, setSelectedGroupRows
+  selectedGroupRows, setSelectedGroupRows,
+  selectedLineRowKeys, setSelctedLineRowKeys,
+  selectedLineRows, setSelectedLineRows
 }: any) {
 
   const handleEquipCancelClick = (id: any) => {
@@ -36,6 +40,19 @@ export default function SelectedItems({
     )
     setSelctedGroupRowKeys(filteredRowKeys)
     setSelectedGroupRows(filteredRows)
+    setIsClickable(true)
+  }
+
+  const handleLineCancelClick = (id: any) => {
+    const filteredRowKeys = selectedLineRowKeys.filter(
+      (rowKey: any) => rowKey !== id
+    )
+    const filteredRows = selectedLineRows.filter(
+      (row: LineDataType) => row.id !== id 
+    )
+    setSelctedLineRowKeys(filteredRowKeys)
+    setSelectedLineRows(filteredRows)
+    setIsClickable(true)
   }
 
   const selectedEquipCard = selectedEquipRows?.map((row: any) => (
@@ -60,7 +77,21 @@ export default function SelectedItems({
     )
   )
 
-  const selectedCard = [...selectedEquipCard, ...selectedGroupCard]
+  const selectedLineCard = selectedLineRows?.map((row: any) => (
+    <p
+      key={row.id}
+      onClick={() => handleLineCancelClick(row.id)}
+      className="dim pointer mr3"
+    >
+      {row.lineName}  &#10005;
+    </p>
+  ))
+
+  const selectedCard = [
+    ...selectedEquipCard, 
+    ...selectedGroupCard,
+    ...selectedLineCard,
+  ]
 
   return (
     <>
@@ -68,15 +99,27 @@ export default function SelectedItems({
       {selectedCard}
     </div>
     <Tabs defaultActiveKey="1">
-      <TabPane tab="按设备群组" key="1">
+      <TabPane tab="按产线" key="1">
+        <LineSelect 
+          isClickable={isClickable}
+          setIsClickable={setIsClickable}
+          selectedLineRowKeys={selectedLineRowKeys}
+          setSelctedLineRowKeys={setSelctedLineRowKeys}
+          selectedLineRows={selectedLineRows}
+          setSelectedLineRows={setSelectedLineRows}
+        />
+      </TabPane>
+      <TabPane tab="按设备群组" key="2">
         <GroupsSelect 
+          isClickable={isClickable}
+          setIsClickable={setIsClickable}
           selectedGroupRowKeys={selectedGroupRowKeys}
           setSelctedGroupRowKeys={setSelctedGroupRowKeys}
           selectedGroupRows={selectedGroupRows}
           setSelectedGroupRows={setSelectedGroupRows}
         />
       </TabPane>
-      <TabPane tab="按设备" key="2">
+      <TabPane tab="按设备" key="3">
         <EquipmentsSelect
           isClickable={isClickable}
           setIsClickable={setIsClickable}
@@ -85,7 +128,7 @@ export default function SelectedItems({
           selectedEquipRows={selectedEquipRows}
           setSelectedEquipRows={setSelectedEquipRows}
         />
-      </TabPane>
+      </TabPane> 
     </Tabs>
     </>
   )
