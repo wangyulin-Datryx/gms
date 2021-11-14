@@ -1,6 +1,7 @@
 import { Form, Row, Col, Button, Input, Divider } from 'antd'
 import { useState } from 'react'
 import SelectedItems from './SelectedItems'
+import axios from "axios"
 
 import type { DataSourceType } from '../equipments/EquipmentManagement'
 import type { GroupDataType } from '../equipmentsGroup/EquipGroupManagement'
@@ -26,14 +27,26 @@ export default function AddAmmeter({ setVisible }: any) {
   const selectedLineIds = [...selectedLineRowKeys]
 
   const onFinish = async (values: any) => {
-    const addLineParmas = {
+    const addAmmeterParams = {
       ...values, 
+      comments: values.comments ? values.comments : null,
       deviceIds: selectedEquipIds,
       groupIds: selectedGroupIds,
       lineIds: selectedLineIds,
     }
-    console.log('add values', addLineParmas)
-    // setVisible(false);
+    console.log("addAmmeterParams", addAmmeterParams)
+    try {
+      const response: any = await axios.post(
+        "api/collector/addAmmeterCollector",
+        addAmmeterParams
+      )
+      console.log("addAmmeterRes", response)
+      if (response.status === 200) {
+        setVisible(false);
+      }
+    } catch(err) {
+      console.log("Failed to add ammeters: ", err)
+    }
   }
 
   return (
@@ -46,16 +59,16 @@ export default function AddAmmeter({ setVisible }: any) {
       <Row gutter={24}>
         <Col span={12} key='1'>
           <Form.Item
-            name='lineName'
-            label='产线名称'
+            name='type'
+            label='电表型号'
             rules={[
               {
                 required: true,
-                message: '请输入产线名称',
+                message: '请输入电表型号',
               },
             ]}
           >
-            <Input placeholder="请输入产线名称" />
+            <Input placeholder="请输入电表型号" />
           </Form.Item>
         </Col>
         <Col span={12} key='2'>

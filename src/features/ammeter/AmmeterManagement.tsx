@@ -246,15 +246,6 @@ export default function AmmeterManagement (){
     },
   ]
 
-  function transferStatus(status: any) {
-    if (status === '在线') {
-      return '1'
-    } else if (status === '离线') {
-      return '0'
-    }
-    return null
-  }
-
   return (
     <div className="bg-white pa3">
       <EditableProTable<AmmeterDataType>
@@ -268,11 +259,17 @@ export default function AmmeterManagement (){
         }}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          const searchParams = {...params, status: transferStatus(params.status)}
           const response:any = await axios.post(
-            'api/collector/searchAll', searchParams
+            'api/collector/searchAll', params
           )
-          return {data: response.data.data, success: true}
+          const data = response.data.data?.map((data:any, index: number) => {
+            return {
+              ...data,
+              indexId: index+1
+            }
+          })
+          console.log("ammeters", response.data.data)
+          return {data, success: true}
         }}
         search={{
           layout: 'vertical',
@@ -312,6 +309,7 @@ export default function AmmeterManagement (){
         onOk={handleEditOk}
         onCancel={handleEditCancel}
         footer={false}
+        width={700}
       >
         <EditAmmeter setVisible={setEditVisible} record={record}/>
       </Modal>

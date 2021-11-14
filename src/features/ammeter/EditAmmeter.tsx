@@ -35,6 +35,7 @@ export default function EditAmmeter({ setVisible, record }: any) {
     console.log('add values', addLineParmas)
     // setVisible(false);
   }
+  console.log("ammeterRecord", record)
 
   return (
     <>
@@ -47,16 +48,16 @@ export default function EditAmmeter({ setVisible, record }: any) {
       <Row gutter={24}>
         <Col span={12} key='1'>
           <Form.Item
-            name='lineName'
-            label='产线名称'
+            name='type'
+            label='电表型号'
             rules={[
               {
                 required: true,
-                message: '请输入产线名称',
+                message: '请输入电表型号',
               },
             ]}
           >
-            <Input placeholder="请输入产线名称" />
+            <Input placeholder="请输入电表型号" />
           </Form.Item>
         </Col>
         <Col span={12} key='2'>

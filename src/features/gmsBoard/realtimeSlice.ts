@@ -33,8 +33,8 @@ export interface EquipmentType {
 const realtimeAdapter = createEntityAdapter<EquipmentType>({
   selectId: (equipment: EquipmentType) => equipment.deviceId,
   sortComparer: (a, b) => {
-    const arecords = a.collectors[0]?.records
-    const brecords = b.collectors[0]?.records
+    const arecords = a?.collectors[0]?.records
+    const brecords = b?.collectors[0]?.records
     const aCurrentAmount = arecords && arecords[arecords.length - 1]?.currentAmount
     const bCurrentAmount = brecords && brecords[brecords.length - 1]?.currentAmount
     return bCurrentAmount - aCurrentAmount

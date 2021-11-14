@@ -13,7 +13,7 @@ export interface IAmmeterType {
 }
 
 const ammeterAdapter = createEntityAdapter<IAmmeterType>({
-  selectId: (ammeter) => ammeter.collectorId
+  selectId: (ammeter) => ammeter?.collectorId
 })
 
 const initialState = ammeterAdapter.getInitialState({
